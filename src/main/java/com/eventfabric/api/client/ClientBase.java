@@ -86,10 +86,9 @@ class ClientBase {
 
             if (response.getStatus() == 200 || response.getStatus() == 201) {
                 List<Cookie> cookies = response.getCookies();
-                if (cookies != null && !cookies.isEmpty()) {
-                    for (int i = 0; i < cookies.size(); i++) {
-                        Cookie cookie = cookies.get(i);
-                        if (cookies.get(i).getName().compareTo("ring-session") == 0) {
+                if (cookies != null) {
+                    for (Cookie cookie: cookies) {
+                        if (cookie.getName().compareTo("ring-session") == 0) {
                             this.sessionCookie = cookie;
                             return true;
                         }
