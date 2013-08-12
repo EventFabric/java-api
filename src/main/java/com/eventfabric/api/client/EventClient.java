@@ -6,21 +6,13 @@ import java.io.IOException;
 
 public class EventClient extends ClientBase {
 
-    public EventClient() {
-        super();
+    public EventClient(String username, String password) {
+        super(username, password);
     }
-
-    public EventClient(EndPointInfo sessionEndPointInfo, Credentials credentials) {
-        super(sessionEndPointInfo, credentials);
-    }
-
-    public EventClient(EndPointInfo endPointInfo,
-            EndPointInfo sessionEndPointInfo, Credentials credentials) {
-        super(endPointInfo, sessionEndPointInfo, credentials);
-    }
-
-    public EventClient(EndPointInfo endPointInfo) {
-        super(endPointInfo);
+    
+    public EventClient(String username, String password,
+            EndPointInfo endPointInfo, EndPointInfo sessionEndPointInfo) {
+        super(username, password, endPointInfo, sessionEndPointInfo);
     }
 
     public Response send(Event event) throws IOException {

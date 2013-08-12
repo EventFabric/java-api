@@ -22,26 +22,17 @@ class ClientBase {
     private Credentials credentials;
     private Cookie sessionCookie;
 
-    public ClientBase() {
-        this(new EndPointInfo(EndPointInfo.DEFAULT_API_ENDPOINT_EVENT),
-                new EndPointInfo(EndPointInfo.DEFAULT_API_ENDPOINT_SESSION),
-                null);
+    public ClientBase(String username, String password) {
+        this(username, password,
+                new EndPointInfo(EndPointInfo.DEFAULT_API_ENDPOINT_EVENT),
+                new EndPointInfo(EndPointInfo.DEFAULT_API_ENDPOINT_SESSION));
     }
 
-    public ClientBase(EndPointInfo endPointInfo) {
-        this.endPointInfo = endPointInfo;
-    }
-
-    public ClientBase(EndPointInfo sessionEndPointInfo, Credentials credentials) {
-        this.sessionEndPointInfo = sessionEndPointInfo;
-        this.credentials = credentials;
-    }
-
-    public ClientBase(EndPointInfo endPointInfo,
-            EndPointInfo sessionEndPointInfo, Credentials credentials) {
+    public ClientBase(String username, String password,
+            EndPointInfo endPointInfo, EndPointInfo sessionEndPointInfo) {
         this.endPointInfo = endPointInfo;
         this.sessionEndPointInfo = sessionEndPointInfo;
-        this.credentials = credentials;
+        this.credentials = new Credentials(username, password);
     }
 
     public Response post(String url, String data) throws IOException {
@@ -113,27 +104,11 @@ class ClientBase {
         return endPointInfo;
     }
 
-    public void setEndPointInfo(EndPointInfo endPointInfo) {
-        this.endPointInfo = endPointInfo;
-    }
-
     public EndPointInfo getSessionEndPointInfo() {
         return sessionEndPointInfo;
     }
 
-    public void setSessionEndPointInfo(EndPointInfo sessionEndPointInfo) {
-        this.sessionEndPointInfo = sessionEndPointInfo;
-    }
-
     public Credentials getCredentials() {
         return credentials;
-    }
-
-    public void setCredentials(Credentials credentials) {
-        this.credentials = credentials;
-    }
-
-    public void cleanSession() {
-        sessionCookie = null;
     }
 }
