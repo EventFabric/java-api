@@ -20,7 +20,7 @@ public class Event {
 	 */
 	public Event(String channel, ObjectNode value) {
 
-        this.channel = this.channel;
+        this.channel = channel;
 		this.value = value;
 	}
 
@@ -31,9 +31,9 @@ public class Event {
 	 *      "http://wiki.fasterxml.com/JacksonInFiveMinutes#Simple_Data_Binding_Example"
 	 *      >Jacksons's Simple Data Binding example</a>
 	 */
-	public Event(String channel, Map value) {
+	public Event(String channel, Map<String, Object> value) {
 
-        this.channel = this.channel;
+        this.channel = channel;
 
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -67,4 +67,12 @@ public class Event {
 
 		return mapper.writeValueAsString(json);
 	}
+
+    public String getChannel() {
+        return this.channel;
+    }
+
+    public ObjectNode getValue() {
+        return this.value;
+    }
 }
