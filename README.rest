@@ -25,6 +25,8 @@ you will need a recent version installed, then do::
 Usage
 -----
 
+see examples folder for more examples.
+
 using scala::
 
     import com.eventfabric.api.client.EventClient
