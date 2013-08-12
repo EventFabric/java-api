@@ -1,0 +1,66 @@
+Event Fabric API Client
+=======================
+
+Java and Scala implementation of Event Fabric API to send events.
+
+Setup
+-----
+
+The project uses `SBT <http://www.scala-sbt.org/>`_ you will need a recent
+version installed, then do::
+
+    // to compile
+    sbt compile
+
+    // to test
+    sbt test
+
+    // to create a jar
+    sbt package
+
+Usage
+-----
+
+using scala::
+
+    import com.eventfabric.api.client.EventClient
+    import com.eventfabric.model.Event
+
+    // create client
+    val client = new EventClient("admin", "notadmin")
+
+    // authenticate
+
+    val success = client.authenticate()
+    println("successful? " + success)
+
+    // create the event value to send
+
+    val value = new java.util.LinkedHashMap[String, Object]()
+    value.put("count", 4:java.lang.Integer)
+    value.put("price", 12.3:java.lang.Double)
+    value.put("yes", true:java.lang.Boolean)
+
+    // create the event to send
+    val event = new Event("my.channel", value)
+
+    // send the event
+    val response = client.send(event)
+
+    // do something with the response
+    println(response.getStatus)
+    println(response.getResult)
+
+if your endpoint is not the default one you have to create a custom event client pointint to your API instance::
+
+    import com.eventfabric.api.client.{EventClient, EndPointInfo}
+    val eventEndpoint = new EndPointInfo("localhost", "/ef/api/event", 8080, false)
+    val sessionEndpoint = new EndPointInfo("localhost", "/ef/api/session", 8080, false)
+
+    // create client
+    val client = new EventClient("admin", "notadmin", eventEndpoint, sessionEndpoint)
+
+License
+-------
+
+MIT
