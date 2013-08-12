@@ -2,9 +2,13 @@ organization := "com.eventfabric"
 
 name := "EventFabricAPIClient"
 
-version := "0.1.0-SNAPSHOT"
+version := "0.1.0"
 
 scalaVersion := "2.9.3"
+
+licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT"))
+
+homepage := Some(url("https://github.com/EventFabric/java-api"))
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
