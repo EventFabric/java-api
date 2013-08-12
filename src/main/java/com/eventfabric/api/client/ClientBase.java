@@ -37,7 +37,8 @@ class ClientBase {
 
     public Response post(String url, String data) throws IOException {
         DefaultHttpClient httpclient = new DefaultHttpClient();
-        Response response = null;
+        Response response = new Response("Empty response", 500,
+                new java.util.LinkedList());
         try {
             StringEntity entity = new StringEntity(data);
             entity.setContentType("application/json;charset=UTF-8");
