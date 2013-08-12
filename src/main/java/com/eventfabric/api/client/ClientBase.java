@@ -75,7 +75,7 @@ class ClientBase {
         }
     }
 
-    public String authenticate() throws IOException {
+    public boolean authenticate() throws IOException {
         Credentials credentials = this.getCredentials();
  
         if (credentials != null) {
@@ -91,14 +91,14 @@ class ClientBase {
                         Cookie cookie = cookies.get(i);
                         if (cookies.get(i).getName().compareTo("ring-session") == 0) {
                             this.sessionCookie = cookie;
-                            return this.sessionCookie.getValue();
+                            return true;
                         }
                     }
                 }
             }
         }
 
-        return "";
+        return false;
     }
 
     public EndPointInfo getEndPointInfo() {
