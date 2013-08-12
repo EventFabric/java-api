@@ -1,4 +1,4 @@
-package ef.api.client;
+package com.eventfabric.api.client;
 
 public class Credentials {
     private final String username;

@@ -1,4 +1,4 @@
-package ef.api.client;
+package com.eventfabric.api.client;
 
 import org.apache.http.cookie.Cookie;
 import java.util.List;

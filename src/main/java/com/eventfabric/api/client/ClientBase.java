@@ -1,4 +1,4 @@
-package ef.api.client;
+package com.eventfabric.api.client;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import ef.model.User;
+import com.eventfabric.model.User;
 
 class ClientBase {
     private Logger log = LoggerFactory.getLogger(this.getClass());

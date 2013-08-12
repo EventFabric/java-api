@@ -1,4 +1,4 @@
-package ef.api.client;
+package com.eventfabric.api.client;
 
 public class EndPointInfo {
     public static String DEFAULT_API_HOST = "event-fabric.com";

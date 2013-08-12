@@ -1,6 +1,6 @@
-package ef.api.client;
+package com.eventfabric.api.client;
 
-import ef.model.Event;
+import com.eventfabric.model.Event;
 
 import java.io.IOException;
 

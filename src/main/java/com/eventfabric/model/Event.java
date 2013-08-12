@@ -1,4 +1,4 @@
-package ef.model;
+package com.eventfabric.model;
 
 import java.io.IOException;
 import java.io.StringWriter;
