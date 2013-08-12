@@ -6,8 +6,9 @@ Java and Scala implementation of Event Fabric API to send events.
 Setup
 -----
 
-The project uses `SBT <http://www.scala-sbt.org/>`_ you will need a recent
-version installed, then do::
+The project uses `SBT <http://www.scala-sbt.org/>`_
+
+you will need a recent version installed, then do::
 
     // to compile
     sbt compile
@@ -17,6 +18,9 @@ version installed, then do::
 
     // to create a jar
     sbt package
+
+    // to create an uber-jar with all the dependencies inside
+    sbt one-jar
 
 Usage
 -----
@@ -51,7 +55,7 @@ using scala::
     println(response.getStatus)
     println(response.getResult)
 
-if your endpoint is not the default one you have to create a custom event client pointint to your API instance::
+if your endpoint is not the default one you have to create a custom event client pointing to your API instance::
 
     import com.eventfabric.api.client.{EventClient, EndPointInfo}
     val eventEndpoint = new EndPointInfo("localhost", "/ef/api/event", 8080, false)

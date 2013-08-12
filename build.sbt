@@ -18,6 +18,10 @@ resolvers += "Apache Maven2 Repository" at "http://repo1.maven.org/maven2/"
 
 javacOptions ++= Seq("-source", "1.6", "-target", "1.6")
 
+autoScalaLibrary := false
+
+seq(com.github.retronym.SbtOneJar.oneJarSettings: _*)
+
 libraryDependencies ++= Seq(
     "commons-logging" % "commons-logging" % "1.1.3",
     "org.slf4j" % "slf4j-api" % "1.7.5",
@@ -26,5 +30,6 @@ libraryDependencies ++= Seq(
     "com.fasterxml.jackson.core" % "jackson-core" % "2.2.2",
     "org.apache.httpcomponents" % "httpclient" % "4.2.5",
     "org.codehaus.jackson" % "jackson-core-asl" % "1.9.13",
-    "org.codehaus.jackson" % "jackson-mapper-asl" % "1.9.13"
+    "org.codehaus.jackson" % "jackson-mapper-asl" % "1.9.13",
+    "commons-lang" % "commons-lang" % "2.6"
 )
