@@ -6,21 +6,25 @@ Java and Scala implementation of Event Fabric API to send events.
 Setup
 -----
 
-The project uses `SBT <http://www.scala-sbt.org/>`_
+To build the project use Maven 2
 
 you will need a recent version installed, then do::
 
+    //If you are using Eclipse IDE, just call:
+    mvn eclipse:eclipse
+
     // to compile
-    sbt compile
+    mvn compile
 
     // to test
-    sbt test
+    mvn test
 
     // to create a jar
-    sbt package
+    mvn package
 
-    // to create an uber-jar with all the dependencies inside
-    sbt one-jar
+    //Now you'll want to install the artifact you've generated (the JAR file) in your local repository (~/.m2/repository is the default location)
+    mvn install
+
 
 Usage
 -----

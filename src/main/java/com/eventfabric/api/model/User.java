@@ -1,4 +1,4 @@
-package com.eventfabric.model;
+package com.eventfabric.api.model;
 
 import java.io.IOException;
 

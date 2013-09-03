@@ -1,6 +1,6 @@
 package com.eventfabric.api.client;
 
-import com.eventfabric.model.Event;
+import com.eventfabric.api.model.Event;
 
 import java.io.IOException;
 
