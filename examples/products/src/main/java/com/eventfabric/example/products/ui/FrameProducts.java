@@ -2,6 +2,7 @@ package com.eventfabric.example.products.ui;
 
 import java.util.Random;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -9,6 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
 
 import com.eventfabric.api.client.EndPointInfo;
 import com.eventfabric.api.client.EventClient;
@@ -38,13 +41,13 @@ public class FrameProducts extends JFrame {
 	private EventClient client;
 	private Timer taskTimer;
 	private JPanel contentPane;
+	private JPanel windowPane;
 	private JTextField txtUsername;
 	private JLabel lblUsername;
 	private JLabel lblPassword;
 	private JPasswordField passwordField;
 	private JTextField txtChannel;
 	private JLabel lblChannel;
-	private final JLabel lblResponse = new JLabel("Response:");
 	private JTextArea lblResponseText;
 	private JButton btnSend;
 	private JButton btnPlay;
@@ -116,7 +119,7 @@ public class FrameProducts extends JFrame {
 			Random generator = new Random();
 			String[] products = txtProducts.getText().split(",");
 			int i = generator.nextInt(products.length);
-			value.put("product", products[i]);
+			value.put("product", products[i].trim());
 			value.put("count", generator.nextInt(100));
 			value.put("price", generator.nextFloat() * 100);
 			value.put("delivered", Math.random() > 0.5);
@@ -129,8 +132,8 @@ public class FrameProducts extends JFrame {
 				Response response = client.send(event);
 				// do something with the response
 
-				String responseText = String.format("Status: %s, Resulst: %s",
-						response.getStatus(), response.getResult());
+				String responseText = String.format("Status: %s\nEvent:\n%s",
+						response.getStatus(), event.toJSONString());
 				lblResponseText.setText(responseText);
 
 			} catch (IOException e) {
@@ -166,10 +169,21 @@ public class FrameProducts extends JFrame {
 	private void createLayout() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 650, 400);
+		setTitle("Event Fabric - Products - Agent example");
+		windowPane = new JPanel();
+		windowPane.setLayout(new BorderLayout(10, 10));
+		setContentPane(windowPane);
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
 		contentPane.setLayout(new GridLayout(0, 3, 0, 0));
+
+		JLabel picLabel = new JLabel();
+		ImageIcon eventfabric = new ImageIcon("eventfabric.png");
+		picLabel.setHorizontalAlignment(SwingConstants.CENTER); 
+		picLabel.setIcon(eventfabric);  
+		windowPane.add(picLabel, BorderLayout.PAGE_START);
+		windowPane.add(contentPane, BorderLayout.CENTER);
 
 		lblUsername = new JLabel("Username:");
 		lblUsername.setLabelFor(txtUsername);
@@ -232,11 +246,9 @@ public class FrameProducts extends JFrame {
 		btnSend = new JButton("Send");
 		contentPane.add(btnSend);
 
-		contentPane.add(lblResponse);
-
 		lblResponseText = new JTextArea("");
-		lblResponseText.setColumns(2);
 		JScrollPane jScrollPane = new JScrollPane(lblResponseText);
-		contentPane.add(jScrollPane);
+		jScrollPane.setPreferredSize(new Dimension(0, 100));
+		windowPane.add(jScrollPane, BorderLayout.PAGE_END);
 	}
 }
