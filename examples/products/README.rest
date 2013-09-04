@@ -6,8 +6,7 @@ Setup
 
 To build the project use Maven 2
 
-you will need a recent version installed, then do::
-
+you will need a recent version of maven2 and the eventfabric java-api module installed, then do::
 
     // to create a one-jar with dependencies included
     mvn clean compile assembly:single
