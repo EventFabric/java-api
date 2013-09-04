@@ -1,0 +1,27 @@
+Products agent example
+======================
+
+Setup
+-----
+
+To build the project use Maven 2
+
+you will need a recent version installed, then do::
+
+
+    // to create a one-jar with dependencies included
+    mvn clean compile assembly:single
+
+    //If you are using Eclipse IDE, just call:
+    mvn eclipse:eclipse
+
+Run it
+------
+
+    //To run it, just call:
+    java -jar target/products-0.1.0-jar-with-dependencies.jar
+
+License
+-------
+
+MIT

@@ -1,0 +1,9 @@
+Examples
+========
+
+        - Products: Application that sends products, price, count and if the product was delivered or not. You can use this example as an agent to create your own dashboard in Event Fabric having float, integer, string and boolean values to graph.
+
+License
+-------
+
+MIT
