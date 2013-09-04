@@ -17,7 +17,7 @@ you will need a recent version of maven2 and the eventfabric java-api module ins
 Run it
 ------
 
-    //To run it, just call:
+    // To run it, just call:
     java -jar target/products-0.1.0-jar-with-dependencies.jar
 
 License
