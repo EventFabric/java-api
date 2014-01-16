@@ -1,3 +1,5 @@
+package com.eventfabric.api.client;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
