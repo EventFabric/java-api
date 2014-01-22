@@ -38,10 +38,16 @@ import javax.swing.JTextArea;
 import org.apache.commons.codec.binary.StringUtils;
 
 public class FrameProducts extends JFrame {
+    private String host = "localhost";
+    private int port = 8080;
 	private EventClient client;
 	private Timer taskTimer;
 	private JPanel contentPane;
 	private JPanel windowPane;
+	private JTextField txtHost;
+	private JLabel lblHost;
+	private JTextField txtPort;
+	private JLabel lblPort;
 	private JTextField txtUsername;
 	private JLabel lblUsername;
 	private JLabel lblPassword;
@@ -143,10 +149,10 @@ public class FrameProducts extends JFrame {
 	}
 
 	private boolean connect() {
-		EndPointInfo endPointInfo = new EndPointInfo("event-fabric.com",
-				"/api/event", 80, false);
-		EndPointInfo sessionEndPointInfo = new EndPointInfo("event-fabric.com",
-				"/api/session", 80, false);
+		EndPointInfo endPointInfo = new EndPointInfo(txtHost.getText(),
+				"/api/event", Integer.parseInt(txtPort.getText()), false);
+		EndPointInfo sessionEndPointInfo = new EndPointInfo(txtHost.getText(),
+				"/api/session", Integer.parseInt(txtPort.getText()), false);
 
 		client = new EventClient(txtUsername.getText(),
 				passwordField.getText(), endPointInfo, sessionEndPointInfo);
@@ -184,6 +190,28 @@ public class FrameProducts extends JFrame {
 		picLabel.setIcon(eventfabric);  
 		windowPane.add(picLabel, BorderLayout.PAGE_START);
 		windowPane.add(contentPane, BorderLayout.CENTER);
+
+		lblHost = new JLabel("Host:");
+		lblHost.setLabelFor(txtHost);
+		contentPane.add(lblHost);
+		txtHost = new JTextField();
+		txtHost.setText(host);
+		contentPane.add(txtHost);
+		txtHost.setColumns(10);
+
+		label = new JLabel("");
+		contentPane.add(label);
+
+		lblPort = new JLabel("Port:");
+		lblPort.setLabelFor(txtPort);
+		contentPane.add(lblPort);
+		txtPort = new JTextField();
+		txtPort.setText(""+port);
+		contentPane.add(txtPort);
+
+		label_1 = new JLabel("");
+		contentPane.add(label_1);
+
 
 		lblUsername = new JLabel("Username:");
 		lblUsername.setLabelFor(txtUsername);

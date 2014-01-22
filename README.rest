@@ -29,7 +29,39 @@ you will need a recent version installed, then do::
 Usage
 -----
 
+Watch this video to understand how to connect your Java Application to Event Fabric. In this video we use examples/salesapp to explain step by step how to do it.
+
+
+http://youtu.be/kuEUG5s5Tow
+
+
 see examples folder for more examples.
+
+using java::
+
+    import com.eventfabric.api.client.EventClient;
+    import com.eventfabric.model.Event;
+
+    YourEntity yourEntity = new YourEntity();
+
+    EventClient eventClient = new EventClient(this.efUsername, this.efPassword);
+    try {
+        boolean authenticated = eventClient.authenticate();
+        if (authenticated) {
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode value = (ObjectNode) mapper.valueToTree(yourEntity);
+            Event event = new Event("my.channel", value);
+            Response response = eventClient.send(event);
+            if (response.getStatus() == 201) {
+                System.out.println("Sale sent to Event Fabric");
+            } else {
+                System.out.println("Error sending Sale to Event Fabric");
+            }
+        }
+	} catch (IOException e) {
+        e.printStackTrace();
+    }
+
 
 using scala::
 
