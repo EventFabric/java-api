@@ -26,6 +26,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JTextField;
+import javax.swing.JCheckBox;
 
 import java.awt.GridLayout;
 
@@ -48,7 +49,9 @@ public class FrameProducts extends JFrame {
 	private JLabel lblHost;
 	private JTextField txtPort;
 	private JLabel lblPort;
+	private JLabel lblSecure;
 	private JTextField txtUsername;
+	private JCheckBox chSecure;
 	private JLabel lblUsername;
 	private JLabel lblPassword;
 	private JPasswordField passwordField;
@@ -150,9 +153,9 @@ public class FrameProducts extends JFrame {
 
 	private boolean connect() {
 		EndPointInfo endPointInfo = new EndPointInfo(txtHost.getText(),
-				"/api/event", Integer.parseInt(txtPort.getText()), false);
+				"/api/event", Integer.parseInt(txtPort.getText()), chSecure.isSelected());
 		EndPointInfo sessionEndPointInfo = new EndPointInfo(txtHost.getText(),
-				"/api/session", Integer.parseInt(txtPort.getText()), false);
+				"/api/session", Integer.parseInt(txtPort.getText()), chSecure.isSelected());
 
 		client = new EventClient(txtUsername.getText(),
 				passwordField.getText(), endPointInfo, sessionEndPointInfo);
@@ -208,10 +211,14 @@ public class FrameProducts extends JFrame {
 		txtPort = new JTextField();
 		txtPort.setText(""+port);
 		contentPane.add(txtPort);
+		contentPane.add(new JLabel(""));
 
-		label_1 = new JLabel("");
-		contentPane.add(label_1);
-
+		lblSecure = new JLabel("Secure:");
+		lblSecure.setLabelFor(chSecure);
+		contentPane.add(lblSecure);
+		chSecure = new JCheckBox();
+		contentPane.add(chSecure);
+		contentPane.add(new JLabel(""));
 
 		lblUsername = new JLabel("Username:");
 		lblUsername.setLabelFor(txtUsername);

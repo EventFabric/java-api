@@ -3,6 +3,7 @@ package com.eventfabric.api.client;
 public class EndPointInfo {
     public static String DEFAULT_API_HOST = "event-fabric.com";
     public static int DEFAULT_API_PORT = 80;
+    public static int DEFAULT_SSL_API_PORT = 443;
     public static boolean DEFAULT_API_SECURE = true;
     public static String DEFAULT_API_ENDPOINT_EVENT = "/api/event";
     public static String DEFAULT_API_ENDPOINT_SESSION = "/api/session";
@@ -14,11 +15,11 @@ public class EndPointInfo {
     private final boolean secure;
 
     public EndPointInfo() {
-        this(DEFAULT_API_HOST, DEFAULT_API_ENDPOINT_EVENT, DEFAULT_API_PORT, DEFAULT_API_SECURE);
+        this(DEFAULT_API_HOST, DEFAULT_API_ENDPOINT_EVENT, DEFAULT_SSL_API_PORT, DEFAULT_API_SECURE);
     }
 
     public EndPointInfo(String path) {
-        this(DEFAULT_API_HOST, path, DEFAULT_API_PORT, DEFAULT_API_SECURE);
+        this(DEFAULT_API_HOST, path, DEFAULT_SSL_API_PORT, DEFAULT_API_SECURE);
     }
 
     public EndPointInfo(String path, int port) {
