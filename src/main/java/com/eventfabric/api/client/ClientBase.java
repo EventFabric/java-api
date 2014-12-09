@@ -126,9 +126,11 @@ class ClientBase {
 		if (credentials != null) {
 			User user = new User(credentials.getUsername(),
 					credentials.getPassword());
+			log.info("loggin", user);
+			
 			Response response = post(this.sessionEndPointInfo.getURL(),
 					user.toJSONString());
-
+			log.info("loggin response", response);
 			if (response.getStatus() == 200 || response.getStatus() == 201) {
 				List<Cookie> cookies = response.getCookies();
 				if (cookies != null) {

@@ -25,4 +25,10 @@ public class Response {
     public List<Cookie> getCookies() {
         return cookies;
     }
+
+	@Override
+	public String toString() {
+		return "Response [result=" + result + ", status=" + status
+				+ ", cookies=" + cookies + "]";
+	}
 }
