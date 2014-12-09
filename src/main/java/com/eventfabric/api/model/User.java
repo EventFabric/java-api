@@ -27,6 +27,14 @@ public class User {
 		this.email = email;
 		this.roles = roles;
 		this.data = data;
+		if (this.data == null) {
+			ObjectMapper mapper = new ObjectMapper();
+			this.data = mapper.createObjectNode();
+		}
+	}
+	
+	public User(String username, String password, String email, String[] roles) {
+		this(username, password, email, roles, null);
 	}
 
 	@Override

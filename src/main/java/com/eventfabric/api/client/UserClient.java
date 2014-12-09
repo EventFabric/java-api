@@ -7,7 +7,9 @@ import java.io.IOException;
 public class UserClient extends ClientBase {
 
     public UserClient(String username, String password) {
-        super(username, password);
+        super(username, password, new EndPointInfo(
+				EndPointInfo.DEFAULT_API_ENDPOINT_USER), new EndPointInfo(
+				EndPointInfo.DEFAULT_API_ENDPOINT_SESSION));
     }
     
     public UserClient(String username, String password,

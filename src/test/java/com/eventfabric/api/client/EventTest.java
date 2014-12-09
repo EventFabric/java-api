@@ -19,11 +19,8 @@ import java.io.IOException;
 
 public class EventTest {
 	//cloud server
-	private final String adminUser = "your_username";
-	private final String adminPassword = "your_password";
-	private final String host = "eventfabric.com";
-	private final boolean isSecure = true;
-	private final int port = 80;
+	private final String user = "standardcloud";
+	private final String password = "st4nd4rdcl0ud";
 	
 	/*//local server
 	private final String adminUser = "admin";
@@ -32,10 +29,10 @@ public class EventTest {
 	private final boolean isSecure = false;
 	private final int port = 8080;*/
 
-	private final EndPointInfo endPointInfo = new EndPointInfo(host,
-			"/api/event", port, isSecure);
-	private final EndPointInfo sessionEndPointInfo = new EndPointInfo(host,
-			"/api/session", port, isSecure);
+	//private final EndPointInfo endPointInfo = new EndPointInfo(host,
+	//		"/api/event", port, isSecure);
+	//private final EndPointInfo sessionEndPointInfo = new EndPointInfo(host,
+	//		"/api/session", port, isSecure);
 	
 	public Event createEvent() {
 		java.util.LinkedHashMap value = new java.util.LinkedHashMap<String, Object>();
@@ -65,8 +62,8 @@ public class EventTest {
 	@Test
 	public void sendEvent() throws IOException {
 		Event event = createEvent();
-		EventClient eventClient = new EventClient(adminUser, adminPassword, endPointInfo, sessionEndPointInfo);
-		//EventClient eventClient = new EventClient(adminUser, adminPassword);
+		//EventClient eventClient = new EventClient(adminUser, adminPassword, endPointInfo, sessionEndPointInfo);
+		EventClient eventClient = new EventClient(user, password);
 	    
 		try {
 	        boolean authenticated = eventClient.authenticate();

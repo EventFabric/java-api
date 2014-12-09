@@ -7,7 +7,9 @@ import java.io.IOException;
 public class EventClient extends ClientBase {
 
     public EventClient(String username, String password) {
-        super(username, password);
+    	super(username, password, new EndPointInfo(
+				EndPointInfo.DEFAULT_API_ENDPOINT_EVENT), new EndPointInfo(
+				EndPointInfo.DEFAULT_API_ENDPOINT_SESSION));
     }
     
     public EventClient(String username, String password,

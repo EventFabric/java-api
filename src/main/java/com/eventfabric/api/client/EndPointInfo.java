@@ -6,6 +6,7 @@ public class EndPointInfo {
     public static int DEFAULT_SSL_API_PORT = 443;
     public static boolean DEFAULT_API_SECURE = true;
     public static String DEFAULT_API_ENDPOINT_EVENT = "/api/event";
+    public static String DEFAULT_API_ENDPOINT_USER = "/api/user";
     public static String DEFAULT_API_ENDPOINT_SESSION = "/api/session";
 
     private final String host;
