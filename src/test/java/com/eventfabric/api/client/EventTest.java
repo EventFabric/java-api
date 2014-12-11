@@ -4,6 +4,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,20 +16,20 @@ import org.slf4j.LoggerFactory;
 import com.eventfabric.api.model.Event;
 import com.eventfabric.api.client.EventClient;
 import com.eventfabric.api.client.Response;
-import com.eventfabric.api.client.EndPointInfo;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.LinkedList;
 import java.io.IOException;
 
 public class EventTest {
 	//cloud server
-	private final String user = "standardcloud";
-	private final String password = "st4nd4rdcl0ud";
+	private final String user = "your_user";
+	private final String password = "your_password";
 	
 	/*//local server
-	private final String adminUser = "admin";
-	private final String adminPassword = "notadmin";
+	private final String adminUser = "your_user";
+	private final String adminPassword = "your_password";
 	private final String host = "localhost";
 	private final boolean isSecure = false;
 	private final int port = 8080;*/
@@ -34,8 +39,8 @@ public class EventTest {
 	//private final EndPointInfo sessionEndPointInfo = new EndPointInfo(host,
 	//		"/api/session", port, isSecure);
 	
-	public Event createEvent() {
-		java.util.LinkedHashMap value = new java.util.LinkedHashMap<String, Object>();
+	public Event createEvent() throws JsonGenerationException, JsonMappingException, IOException {
+		LinkedHashMap<String, Object> value = new java.util.LinkedHashMap<String, Object>();
 		value.put("count", 4);
 		value.put("price", 12.3);
 		value.put("yes", true);
@@ -44,6 +49,16 @@ public class EventTest {
 		return event;
 	}
 
+	
+	@Test
+	public void createEventWithStringValue() throws JsonParseException, JsonMappingException, IOException {
+		String str = "{\"count\":4,\"price\":12.3,\"yes\":true}";
+		Event event = new Event("my.channel", str);
+
+		assertEquals(event.getChannel(), "my.channel");
+		assertEquals(event.toJSONString(), "{\"channel\":\"my.channel\",\"value\":{\"count\":4,\"price\":12.3,\"yes\":true}}");
+	}
+	/*
 	@Test
 	public void testValueAndChannel() throws IOException {
 		java.util.HashMap<String, Object> value = new java.util.HashMap<String, Object>();
@@ -76,6 +91,6 @@ public class EventTest {
 		} catch (IOException e) {
 	        fail(e.getMessage());
 	    }
-	}
+	}*/
 }
 

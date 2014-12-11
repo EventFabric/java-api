@@ -14,12 +14,12 @@ import com.eventfabric.api.model.User;
 
 public class UserTest {
 	//cloud server
-	private final String adminUser = "standardcloud";
-	private final String adminPassword = "st4nd4rdcl0ud";
+	private final String adminUser = "your_user";
+	private final String adminPassword = "your_password";
 	
 	/*//local server
-	private final String adminUser = "admin";
-	private final String adminPassword = "notadmin";
+	private final String adminUser = "your_user";
+	private final String adminPassword = "your_password";
 	private final String host = "localhost";
 	private final boolean isSecure = false;
 	private final int port = 8080;*/

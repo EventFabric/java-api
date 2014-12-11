@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 
@@ -20,34 +24,39 @@ public class Event {
 	 */
 	public Event(String channel, ObjectNode value) {
 
-        this.channel = channel;
+		this.channel = channel;
 		this.value = value;
 	}
 
 	/**
 	 * Create an object based on the JSON Simple Data Binding.
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonGenerationException 
 	 * 
 	 * @see <a href=
 	 *      "http://wiki.fasterxml.com/JacksonInFiveMinutes#Simple_Data_Binding_Example"
 	 *      >Jacksons's Simple Data Binding example</a>
 	 */
-	public Event(String channel, Map<String, Object> value) {
+	public Event(String channel, Map<String, Object> value) throws JsonGenerationException, JsonMappingException, IOException {
 
-        this.channel = channel;
+		this.channel = channel;
 
 		ObjectMapper mapper = new ObjectMapper();
-		try {
-			// Auto-convert Map to a JSON string...
-			StringWriter str = new StringWriter();
-			mapper.writeValue(str, value);
+		// Auto-convert Map to a JSON string...
+		StringWriter str = new StringWriter();
+		mapper.writeValue(str, value);
 
-			// ... and parse it back into a tree node
-			ObjectNode node = mapper
-					.readValue(str.toString(), ObjectNode.class);
-			this.value = node;
-		} catch (IOException e) {
-			this.value = mapper.createObjectNode();
-		}
+		// ... and parse it back into a tree node
+		ObjectNode node = mapper.readValue(str.toString(), ObjectNode.class);
+		this.value = node;
+	}
+
+	public Event(String channel, String value) throws JsonParseException,
+			JsonMappingException, IOException {
+		this.channel = channel;
+		ObjectMapper mapper = new ObjectMapper();
+		this.value = (ObjectNode) mapper.readTree(value);
 	}
 
 	public ObjectNode toJSON() {
@@ -68,11 +77,11 @@ public class Event {
 		return mapper.writeValueAsString(json);
 	}
 
-    public String getChannel() {
-        return this.channel;
-    }
+	public String getChannel() {
+		return this.channel;
+	}
 
-    public ObjectNode getValue() {
-        return this.value;
-    }
+	public ObjectNode getValue() {
+		return this.value;
+	}
 }
