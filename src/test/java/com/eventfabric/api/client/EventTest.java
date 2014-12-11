@@ -26,10 +26,10 @@ public class EventTest {
 	//cloud server
 	private final String user = "your_user";
 	private final String password = "your_password";
-	/*
+	
 	//local server
-	private final String adminUser = "your_user";
-	private final String adminPassword = "your_password";
+	/*private final String adminUser = "admin";
+	private final String adminPassword = "notadmin";
 	private final String host = "localhost";
 	private final boolean isSecure = false;
 	private final int port = 8080;
@@ -37,8 +37,8 @@ public class EventTest {
 	private final EndPointInfo endPointInfo = new EndPointInfo(host,
 			"/api/event", port, isSecure);
 	private final EndPointInfo sessionEndPointInfo = new EndPointInfo(host,
-			"/api/session", port, isSecure);
-	*/
+			"/api/session", port, isSecure);*/
+	
 	public Event createEvent() throws JsonGenerationException, JsonMappingException, IOException {
 		LinkedHashMap<String, Object> value = new java.util.LinkedHashMap<String, Object>();
 		value.put("count", 4);
