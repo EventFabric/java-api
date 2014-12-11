@@ -1,5 +1,8 @@
 package com.eventfabric.api.model;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
@@ -7,6 +10,7 @@ import java.util.Map;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
@@ -14,7 +18,10 @@ import org.codehaus.jackson.node.ObjectNode;
 public class Event {
 	private String channel;
 	private ObjectNode value;
-
+	
+	public Event(String channel) {
+		this.channel = channel;
+	}
 	/**
 	 * Create an object based on the JSON Tree Model (used internally).
 	 * 
@@ -83,5 +90,11 @@ public class Event {
 
 	public ObjectNode getValue() {
 		return this.value;
+	}
+	
+	public void loadValueFromFile(String path) throws JsonProcessingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		BufferedReader fileReader = new BufferedReader(new FileReader(path));
+		this.value = (ObjectNode) mapper.readTree(fileReader);
 	}
 }

@@ -26,19 +26,19 @@ public class EventTest {
 	//cloud server
 	private final String user = "your_user";
 	private final String password = "your_password";
-	
-	/*//local server
+	/*
+	//local server
 	private final String adminUser = "your_user";
 	private final String adminPassword = "your_password";
 	private final String host = "localhost";
 	private final boolean isSecure = false;
-	private final int port = 8080;*/
+	private final int port = 8080;
 
-	//private final EndPointInfo endPointInfo = new EndPointInfo(host,
-	//		"/api/event", port, isSecure);
-	//private final EndPointInfo sessionEndPointInfo = new EndPointInfo(host,
-	//		"/api/session", port, isSecure);
-	
+	private final EndPointInfo endPointInfo = new EndPointInfo(host,
+			"/api/event", port, isSecure);
+	private final EndPointInfo sessionEndPointInfo = new EndPointInfo(host,
+			"/api/session", port, isSecure);
+	*/
 	public Event createEvent() throws JsonGenerationException, JsonMappingException, IOException {
 		LinkedHashMap<String, Object> value = new java.util.LinkedHashMap<String, Object>();
 		value.put("count", 4);
@@ -58,7 +58,7 @@ public class EventTest {
 		assertEquals(event.getChannel(), "my.channel");
 		assertEquals(event.toJSONString(), "{\"channel\":\"my.channel\",\"value\":{\"count\":4,\"price\":12.3,\"yes\":true}}");
 	}
-	/*
+	
 	@Test
 	public void testValueAndChannel() throws IOException {
 		java.util.HashMap<String, Object> value = new java.util.HashMap<String, Object>();
@@ -91,6 +91,6 @@ public class EventTest {
 		} catch (IOException e) {
 	        fail(e.getMessage());
 	    }
-	}*/
+	}
 }
 
