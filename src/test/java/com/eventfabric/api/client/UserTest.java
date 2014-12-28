@@ -14,31 +14,31 @@ import com.eventfabric.api.model.User;
 
 public class UserTest {
 	//cloud server
-	private final String adminUser = "your_user";
+	/*private final String adminUser = "your_user";
 	private final String adminPassword = "your_password";
-	
-	/*//local server
-	private final String adminUser = "your_user";
-	private final String adminPassword = "your_password";
+	*/
+	//local server
+	private final String adminUser = "admin";
+	private final String adminPassword = "secret";
 	private final String host = "localhost";
 	private final boolean isSecure = false;
-	private final int port = 8080;*/
-	//private final EndPointInfo endPointInfo = new EndPointInfo(host,
-	//		"/api/user", port, isSecure);
-	//private final EndPointInfo sessionEndPointInfo = new EndPointInfo(host,
-	//		"/api/session", port, isSecure);
+	private final int port = 8080;
+	private final EndPointInfo endPointInfo = new EndPointInfo(host,
+			"/users", port, isSecure);
+	private final EndPointInfo sessionEndPointInfo = new EndPointInfo(host,
+			"/sessions", port, isSecure);
 	
-	private User createUser() {
+	private User createUserEntity() {
+		String testuser = "testuser" + Math.round((Math.random() * 100000));
+		String testpassword = "secret";
 		String[] roles = new String[] {"user", "watcher", "event-creator"};
-		User user = new User("testuser3", "testpassword", "testuser@eventfabric.com", roles);
+		User user = new User(testuser, testpassword, "testuser@eventfabric.com", roles);
 		return user;
 	}
 	
-	@Test
-	public void createTestUserWithAdmin() throws IOException {
-		User user = createUser();
-		//UserClient userClient = new UserClient(adminUser, adminPassword, endPointInfo, sessionEndPointInfo);
-		UserClient userClient = new UserClient(adminUser, adminPassword);
+	private User insertUserWithAdmin() {
+		User user = createUserEntity();
+		UserClient userClient = new UserClient(adminUser, adminPassword, endPointInfo, sessionEndPointInfo);
 		
 		try {
 	        boolean authenticated = userClient.authenticate();
@@ -51,17 +51,24 @@ public class UserTest {
 		} catch (IOException e) {
 	        fail(e.getMessage());
 	    }
+	    return user;
 	}
-	/*
+	
 	@Test
-	public void createTestUserWithoutAdmin() throws IOException {
-		User user = createUser();
-		//UserClient userClient = new UserClient("testuser3", "testpassword", endPointInfo, sessionEndPointInfo);
-		UserClient userClient = new UserClient("testuser", "testpassword");
+	public void createUserWithAdminTest() throws IOException {
+		insertUserWithAdmin();
+	}
+
+	@Test
+	public void createUserWithoutAdminTest() throws IOException {
+		User user = insertUserWithAdmin();
+		User newUser = createUserEntity();
+		UserClient userClient = new UserClient(user.getUsername(), user.getPassword(), endPointInfo, sessionEndPointInfo);
+		
 		try {
 	        boolean authenticated = userClient.authenticate();
 	        if (authenticated) {
-	            Response response = userClient.send(user);
+	            Response response = userClient.send(newUser);
 	            assertEquals(401, response.getStatus());
 	        } else {
 		        fail("Wrong authentication");
@@ -69,5 +76,5 @@ public class UserTest {
 		} catch (IOException e) {
 	        fail(e.getMessage());
 	    }
-	}*/
+	}
 }

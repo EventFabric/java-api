@@ -73,7 +73,7 @@ public class Event {
 		root.put("channel", channel);
 		root.put("value", value);
 
-		return root;
+		return value;
 	}
 
 	public String toJSONString() throws IOException {

@@ -35,7 +35,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JList;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
-
+import org.codehaus.jackson.JsonGenerationException;
 import org.apache.commons.codec.binary.StringUtils;
 
 public class FrameProducts extends JFrame {
@@ -133,10 +133,10 @@ public class FrameProducts extends JFrame {
 			value.put("price", generator.nextFloat() * 100);
 			value.put("delivered", Math.random() > 0.5);
 
-			// create the event to send
-			Event event = new Event(txtChannel.getText(), value);
-
 			try {
+				// create the event to send
+				Event event = new Event(txtChannel.getText(), value);
+
 				// send the event
 				Response response = client.send(event);
 				// do something with the response
@@ -144,7 +144,8 @@ public class FrameProducts extends JFrame {
 				String responseText = String.format("Status: %s\nEvent:\n%s",
 						response.getStatus(), event.toJSONString());
 				lblResponseText.setText(responseText);
-
+			} catch (JsonGenerationException e) {
+				lblResponseText.setText(e.getMessage());
 			} catch (IOException e) {
 				lblResponseText.setText(e.getMessage());
 			}
@@ -153,9 +154,9 @@ public class FrameProducts extends JFrame {
 
 	private boolean connect() {
 		EndPointInfo endPointInfo = new EndPointInfo(txtHost.getText(),
-				"/api/event", Integer.parseInt(txtPort.getText()), chSecure.isSelected());
+				"/streams", Integer.parseInt(txtPort.getText()), chSecure.isSelected());
 		EndPointInfo sessionEndPointInfo = new EndPointInfo(txtHost.getText(),
-				"/api/session", Integer.parseInt(txtPort.getText()), chSecure.isSelected());
+				"/sessions", Integer.parseInt(txtPort.getText()), chSecure.isSelected());
 
 		client = new EventClient(txtUsername.getText(),
 				passwordField.getText(), endPointInfo, sessionEndPointInfo);

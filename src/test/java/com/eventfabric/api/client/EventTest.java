@@ -24,20 +24,20 @@ import java.io.IOException;
 
 public class EventTest {
 	//cloud server
-	private final String user = "your_user";
-	private final String password = "your_password";
+	/*private final String user = "your_user";
+	private final String password = "your_password";*/
 	
 	//local server
-	/*private final String adminUser = "admin";
-	private final String adminPassword = "notadmin";
+	private final String adminUser = "admin";
+	private final String adminPassword = "secret";
 	private final String host = "localhost";
 	private final boolean isSecure = false;
 	private final int port = 8080;
 
 	private final EndPointInfo endPointInfo = new EndPointInfo(host,
-			"/api/event", port, isSecure);
+			"/streams", port, isSecure);
 	private final EndPointInfo sessionEndPointInfo = new EndPointInfo(host,
-			"/api/session", port, isSecure);*/
+			"/sessions", port, isSecure);
 	
 	public Event createEvent() throws JsonGenerationException, JsonMappingException, IOException {
 		LinkedHashMap<String, Object> value = new java.util.LinkedHashMap<String, Object>();
@@ -49,7 +49,7 @@ public class EventTest {
 		return event;
 	}
 
-	
+	/*
 	@Test
 	public void createEventWithStringValue() throws JsonParseException, JsonMappingException, IOException {
 		String str = "{\"count\":4,\"price\":12.3,\"yes\":true}";
@@ -73,12 +73,13 @@ public class EventTest {
 		Event event = createEvent();
 		assertEquals(event.toJSONString(), "{\"channel\":\"my.channel\",\"value\":{\"count\":4,\"price\":12.3,\"yes\":true}}");
 	}
+	*/
 	
 	@Test
 	public void sendEvent() throws IOException {
 		Event event = createEvent();
-		//EventClient eventClient = new EventClient(adminUser, adminPassword, endPointInfo, sessionEndPointInfo);
-		EventClient eventClient = new EventClient(user, password);
+		EventClient eventClient = new EventClient(adminUser, adminPassword, endPointInfo, sessionEndPointInfo);
+		//EventClient eventClient = new EventClient(user, password);
 	    
 		try {
 	        boolean authenticated = eventClient.authenticate();
@@ -93,4 +94,3 @@ public class EventTest {
 	    }
 	}
 }
-

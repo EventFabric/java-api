@@ -4,8 +4,16 @@ import com.eventfabric.api.model.Event;
 
 import java.io.IOException;
 
-public class EventClient extends ClientBase {
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class EventClient extends ClientBase {
+	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private ObjectMapper mapper = new ObjectMapper();
+
+	
     public EventClient(String username, String password) {
     	super(username, password, new EndPointInfo(
 				EndPointInfo.DEFAULT_API_ENDPOINT_EVENT), new EndPointInfo(
@@ -18,6 +26,8 @@ public class EventClient extends ClientBase {
     }
 
     public Response send(Event event) throws IOException {
-        return post(getEndPointInfo().toString(), event.toJSONString());
+    	String url = String.format("%s/%s/%s/", getEndPointInfo(), getCredentials().getUsername(), event.getChannel());
+    	String data = mapper.writeValueAsString(event.getValue());
+    	return post(url, data);
     }
 }

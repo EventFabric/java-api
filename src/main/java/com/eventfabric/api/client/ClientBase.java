@@ -12,13 +12,14 @@ import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.cookie.Cookie;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -34,7 +35,7 @@ class ClientBase {
 	private EndPointInfo endPointInfo;
 	private EndPointInfo sessionEndPointInfo;
 	private Credentials credentials;
-	private Cookie sessionCookie;
+	private String token;
 
 	public ClientBase(String username, String password) {
 		this(username, password, new EndPointInfo(
@@ -51,17 +52,19 @@ class ClientBase {
 
 	protected Response post(String url, String data) throws IOException {
 		DefaultHttpClient httpclient = null;
-		Response response = new Response("Empty response", 500,
-				new java.util.LinkedList());
+		Response response = new Response("Empty response", 500);
 		try {
 			httpclient = getHttpClient();
 			StringEntity entity = new StringEntity(data);
 			entity.setContentType("application/json;charset=UTF-8");
-
+			
 			HttpPost httppost = new HttpPost(url);
 			httppost.setEntity(entity);
-			if (sessionCookie != null) {
-				httpclient.getCookieStore().addCookie(sessionCookie);
+			
+			if (token != null && token.length() > 0) {
+				log.info("x-session" + token);
+				httppost.addHeader("x-session", token);
+				//httpclient.getParams().setParameter("x-session", token);
 			}
 
 			HttpResponse httpResponse = httpclient.execute(httppost);
@@ -74,8 +77,7 @@ class ClientBase {
 				jsonResult = EntityUtils.toString(resEntity);
 			}
 
-			response = new Response(jsonResult, httpResponse.getStatusLine()
-					.getStatusCode(), httpclient.getCookieStore().getCookies());
+			response = new Response(jsonResult, httpResponse.getStatusLine().getStatusCode());
 
 			EntityUtils.consume(resEntity);
 
@@ -125,22 +127,14 @@ class ClientBase {
 
 		if (credentials != null) {
 			User user = new User(credentials.getUsername(),
-					credentials.getPassword());
-			log.info("loggin", user);
-			
+					credentials.getPassword());			
 			Response response = post(this.sessionEndPointInfo.getURL(),
 					user.toJSONString());
-			log.info("loggin response", response);
-			if (response.getStatus() == 200 || response.getStatus() == 201) {
-				List<Cookie> cookies = response.getCookies();
-				if (cookies != null) {
-					for (Cookie cookie : cookies) {
-						if (cookie.getName().compareTo("ring-session") == 0) {
-							this.sessionCookie = cookie;
-							return true;
-						}
-					}
-				}
+			if (response.getStatus() == 201) {
+				ObjectMapper mapper = new ObjectMapper();
+				JsonNode result = mapper.readTree(response.getResult());
+				this.token = result.get("token").asText();
+				return true;
 			}
 		}
 
