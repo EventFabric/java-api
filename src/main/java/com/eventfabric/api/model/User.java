@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 public class User {
@@ -32,7 +31,7 @@ public class User {
 			this.data = mapper.createObjectNode();
 		}
 	}
-	
+
 	public User(String username, String password, String email, String[] roles) {
 		this(username, password, email, roles, null);
 	}

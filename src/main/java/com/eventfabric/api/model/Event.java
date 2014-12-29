@@ -1,14 +1,12 @@
 package com.eventfabric.api.model;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -17,11 +15,13 @@ import org.codehaus.jackson.node.ObjectNode;
 
 public class Event {
 	private String channel;
+	private String username;
 	private ObjectNode value;
-	
+
 	public Event(String channel) {
 		this.channel = channel;
 	}
+
 	/**
 	 * Create an object based on the JSON Tree Model (used internally).
 	 * 
@@ -30,22 +30,23 @@ public class Event {
 	 *      >Jackson's Tree Model example</a>
 	 */
 	public Event(String channel, ObjectNode value) {
-
 		this.channel = channel;
 		this.value = value;
 	}
 
 	/**
 	 * Create an object based on the JSON Simple Data Binding.
-	 * @throws IOException 
-	 * @throws JsonMappingException 
-	 * @throws JsonGenerationException 
+	 * 
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonGenerationException
 	 * 
 	 * @see <a href=
 	 *      "http://wiki.fasterxml.com/JacksonInFiveMinutes#Simple_Data_Binding_Example"
 	 *      >Jacksons's Simple Data Binding example</a>
 	 */
-	public Event(String channel, Map<String, Object> value) throws JsonGenerationException, JsonMappingException, IOException {
+	public Event(String channel, Map<String, Object> value)
+			throws JsonGenerationException, JsonMappingException, IOException {
 
 		this.channel = channel;
 
@@ -66,12 +67,31 @@ public class Event {
 		this.value = (ObjectNode) mapper.readTree(value);
 	}
 
+	public Event(String channel, String value, String username)
+			throws JsonParseException, JsonMappingException, IOException {
+		this(channel, value);
+		setUsername(username);
+	}
+
+	public Event(String channel, Map<String, Object> value, String username)
+			throws JsonParseException, JsonMappingException, IOException {
+		this(channel, value);
+		setUsername(username);
+	}
+
+	public Event(String channel, ObjectNode value, String username)
+			throws JsonParseException, JsonMappingException, IOException {
+		this(channel, value);
+		setUsername(username);
+	}
+
 	public ObjectNode toJSON() {
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode root = mapper.createObjectNode();
 
 		root.put("channel", channel);
 		root.put("value", value);
+		root.put("username", username);
 
 		return value;
 	}
@@ -91,8 +111,17 @@ public class Event {
 	public ObjectNode getValue() {
 		return this.value;
 	}
-	
-	public void loadValueFromFile(String path) throws JsonProcessingException, IOException {
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void loadValueFromFile(String path) throws JsonProcessingException,
+			IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		BufferedReader fileReader = new BufferedReader(new FileReader(path));
 		this.value = (ObjectNode) mapper.readTree(fileReader);
