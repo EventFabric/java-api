@@ -15,7 +15,7 @@ import org.codehaus.jackson.node.ObjectNode;
 
 public class Event {
 	private String channel;
-	private String username;
+	private String bucket;
 	private ObjectNode value;
 
 	public Event(String channel) {
@@ -67,22 +67,22 @@ public class Event {
 		this.value = (ObjectNode) mapper.readTree(value);
 	}
 
-	public Event(String channel, String value, String username)
+	public Event(String channel, String value, String bucket)
 			throws JsonParseException, JsonMappingException, IOException {
 		this(channel, value);
-		setUsername(username);
+		setBucket(bucket);
 	}
 
-	public Event(String channel, Map<String, Object> value, String username)
+	public Event(String channel, Map<String, Object> value, String bucket)
 			throws JsonParseException, JsonMappingException, IOException {
 		this(channel, value);
-		setUsername(username);
+		setBucket(bucket);
 	}
 
-	public Event(String channel, ObjectNode value, String username)
+	public Event(String channel, ObjectNode value, String bucket)
 			throws JsonParseException, JsonMappingException, IOException {
 		this(channel, value);
-		setUsername(username);
+		setBucket(bucket);
 	}
 
 	public ObjectNode toJSON() {
@@ -91,7 +91,7 @@ public class Event {
 
 		root.put("channel", channel);
 		root.put("value", value);
-		root.put("username", username);
+		root.put("username", bucket);
 
 		return value;
 	}
@@ -112,18 +112,18 @@ public class Event {
 		return this.value;
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
 	public void loadValueFromFile(String path) throws JsonProcessingException,
 			IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		BufferedReader fileReader = new BufferedReader(new FileReader(path));
 		this.value = (ObjectNode) mapper.readTree(fileReader);
+	}
+
+	public String getBucket() {
+		return bucket;
+	}
+
+	public void setBucket(String bucket) {
+		this.bucket = bucket;
 	}
 }

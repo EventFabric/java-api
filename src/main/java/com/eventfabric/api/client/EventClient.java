@@ -21,11 +21,11 @@ public class EventClient extends ClientBase {
 	}
 
 	public Response send(Event event) throws IOException {
-		String username = event.getUsername();
-		if (username == null || username.isEmpty()) {
-			username = getCredentials().getUsername();
+		String bucket = event.getBucket();
+		if (bucket == null || bucket.isEmpty()) {
+			bucket = "_user_" + getCredentials().getUsername();
 		}
-		String url = String.format("%s/%s/%s/", getEndPointInfo(), username,
+		String url = String.format("%s/%s/%s/", getEndPointInfo(), bucket,
 				event.getChannel());
 		String data = mapper.writeValueAsString(event.getValue());
 		return post(url, data);
