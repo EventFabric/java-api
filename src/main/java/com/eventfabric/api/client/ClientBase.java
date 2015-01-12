@@ -33,6 +33,7 @@ class ClientBase {
 	private EndPointInfo sessionEndPointInfo;
 	private Credentials credentials;
 	private String token;
+	private boolean authenticated;
 
 	public ClientBase(String username, String password) {
 		this(username, password, new EndPointInfo(
@@ -74,9 +75,12 @@ class ClientBase {
 				jsonResult = EntityUtils.toString(resEntity);
 			}
 
-			response = new Response(jsonResult, httpResponse.getStatusLine()
-					.getStatusCode());
-
+			int statusCode = httpResponse.getStatusLine()
+					.getStatusCode();
+			response = new Response(jsonResult, statusCode);
+			if (statusCode == 401) {
+				setAuthenticated(false);
+			}
 			EntityUtils.consume(resEntity);
 
 		} catch (Exception ex) {
@@ -121,7 +125,7 @@ class ClientBase {
 
 	public boolean authenticate() throws IOException {
 		Credentials credentials = this.getCredentials();
-
+		setAuthenticated(false);
 		if (credentials != null) {
 			User user = new User(credentials.getUsername(),
 					credentials.getPassword());
@@ -131,11 +135,11 @@ class ClientBase {
 				ObjectMapper mapper = new ObjectMapper();
 				JsonNode result = mapper.readTree(response.getResult());
 				this.token = result.get("token").asText();
-				return true;
+				setAuthenticated(true);
 			}
 		}
 
-		return false;
+		return isAuthenticated();
 	}
 
 	public EndPointInfo getEndPointInfo() {
@@ -148,5 +152,13 @@ class ClientBase {
 
 	public Credentials getCredentials() {
 		return credentials;
+	}
+	
+	public boolean isAuthenticated() {
+		return authenticated;
+	}
+
+	public void setAuthenticated(boolean authenticated) {
+		this.authenticated = authenticated;
 	}
 }
