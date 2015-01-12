@@ -143,6 +143,11 @@ class ClientBase {
 
 		return isAuthenticated();
 	}
+	
+	public void loggout() {
+		setAuthenticated(false);
+		this.token = null;
+	}
 
 	public EndPointInfo getEndPointInfo() {
 		return endPointInfo;
