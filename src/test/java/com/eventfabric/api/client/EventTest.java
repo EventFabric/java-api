@@ -79,6 +79,8 @@ public class EventTest {
 			if (authenticated) {
 				Response response = eventClient.send(event);
 				assertEquals(201, response.getStatus());
+				response = eventClient.patch(event);
+				assertEquals(201, response.getStatus());
 			} else {
 				fail("Wrong authentication");
 			}

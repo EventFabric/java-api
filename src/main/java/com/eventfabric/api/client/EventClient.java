@@ -34,4 +34,16 @@ public class EventClient extends ClientBase {
 
 		return post(url, data);
 	}
+	
+	public Response patch(Event event) throws IOException {
+		String bucket = event.getBucket();
+		if (bucket == null || bucket.isEmpty()) {
+			bucket = "_user_" + getCredentials().getUsername();
+		}
+		String url = String.format("%s/%s/%s/", getEndPointInfo(), bucket,
+				event.getChannel());
+		String data = mapper.writeValueAsString(event.getValue());
+
+		return patch(url, data);
+	}
 }

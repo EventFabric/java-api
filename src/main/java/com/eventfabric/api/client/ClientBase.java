@@ -12,6 +12,7 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
@@ -60,7 +61,6 @@ class ClientBase {
 			httppost.setEntity(entity);
 
 			if (token != null && token.length() > 0) {
-				log.info("x-session" + token);
 				httppost.addHeader("x-session", token);
 				// httpclient.getParams().setParameter("x-session", token);
 			}
@@ -92,6 +92,55 @@ class ClientBase {
 		if (httpclient != null) {
 			httpclient.getConnectionManager().shutdown();
 		}
+		return response;
+	}
+
+	protected Response patch(String url, String data) throws IOException {
+		DefaultHttpClient httpclient = null;
+		Response response = new Response("Empty response", 500);
+		try {
+			httpclient = getHttpClient();
+			StringEntity entity = new StringEntity(data);
+			log.info("body {}", data);
+			entity.setContentType("application/json-patch+json;charset=UTF-8");
+
+			HttpPatch request = new HttpPatch(url);
+			request.setEntity(entity);
+
+			if (token != null && token.length() > 0) {
+				request.addHeader("x-session", token);
+				// httpclient.getParams().setParameter("x-session", token);
+			}
+
+			HttpResponse httpResponse = httpclient.execute(request);
+			log.info("executing patch request {} got status {}",
+					request.getRequestLine(), httpResponse.getStatusLine());
+
+			HttpEntity resEntity = httpResponse.getEntity();
+			String jsonResult = null;
+			if (resEntity != null) {
+				jsonResult = EntityUtils.toString(resEntity);
+			}
+
+			int statusCode = httpResponse.getStatusLine()
+					.getStatusCode();
+			response = new Response(jsonResult, statusCode);
+			if (statusCode == 401) {
+				setAuthenticated(false);
+			}
+			EntityUtils.consume(resEntity);
+
+		} catch (Exception ex) {
+			log.error("Exception on patch to {}", url, ex);
+		}
+		// When HttpClient instance is no longer needed,
+		// shut down the connection manager to ensure
+		// immediate deallocation of all system resources
+		if (httpclient != null) {
+			httpclient.getConnectionManager().shutdown();
+		}
+		log.info("Response {} with code {}",
+				response.getResult(), response.getStatus());
 		return response;
 	}
 
