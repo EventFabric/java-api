@@ -187,9 +187,6 @@ class ClientBase {
 				setAuthenticated(true);
 			}
 		}
-		
-		log.info("is authenticated: " + isAuthenticated());
-
 		return isAuthenticated();
 	}
 	
