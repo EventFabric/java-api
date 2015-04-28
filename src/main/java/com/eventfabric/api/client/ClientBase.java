@@ -12,6 +12,7 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ClientConnectionManager;
@@ -47,6 +48,50 @@ class ClientBase {
 		this.endPointInfo = endPointInfo;
 		this.sessionEndPointInfo = sessionEndPointInfo;
 		this.credentials = new Credentials(username, password);
+	}
+
+		
+	protected Response get(String url) throws IOException {
+		DefaultHttpClient httpclient = null;
+		Response response = new Response("Empty response", 500);
+		try {
+			httpclient = getHttpClient();
+			
+			HttpGet httpget = new HttpGet(url);
+			
+			if (token != null && token.length() > 0) {
+				httpget.addHeader("x-session", token);
+				// httpclient.getParams().setParameter("x-session", token);
+			}
+
+			HttpResponse httpResponse = httpclient.execute(httpget);
+			log.info("executing request {} got status {}",
+					httpget.getRequestLine(), httpResponse.getStatusLine());
+
+			HttpEntity resEntity = httpResponse.getEntity();
+			String jsonResult = null;
+			if (resEntity != null) {
+				jsonResult = EntityUtils.toString(resEntity);
+			}
+
+			int statusCode = httpResponse.getStatusLine()
+					.getStatusCode();
+			response = new Response(jsonResult, statusCode);
+			if (statusCode == 401) {
+				setAuthenticated(false);
+			}
+			EntityUtils.consume(resEntity);
+
+		} catch (Exception ex) {
+			log.error("Exception on get to {}", url, ex);
+		}
+		// When HttpClient instance is no longer needed,
+		// shut down the connection manager to ensure
+		// immediate deallocation of all system resources
+		if (httpclient != null) {
+			httpclient.getConnectionManager().shutdown();
+		}
+		return response;
 	}
 
 	protected Response post(String url, String data) throws IOException {
@@ -144,7 +189,7 @@ class ClientBase {
 		return response;
 	}
 
-	private DefaultHttpClient getHttpClient() throws NoSuchAlgorithmException,
+	protected DefaultHttpClient getHttpClient() throws NoSuchAlgorithmException,
 			KeyManagementException {
 		DefaultHttpClient base = new DefaultHttpClient();
 		SSLContext ctx = SSLContext.getInstance("TLS");
@@ -216,5 +261,13 @@ class ClientBase {
 
 	public void setAuthenticated(boolean authenticated) {
 		this.authenticated = authenticated;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

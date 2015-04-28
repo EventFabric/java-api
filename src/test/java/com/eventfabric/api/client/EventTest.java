@@ -41,35 +41,9 @@ public class EventTest {
 
 		return event;
 	}
-
 	/*
-	 * @Test public void createEventWithStringValue() throws JsonParseException,
-	 * JsonMappingException, IOException { String str =
-	 * "{\"count\":4,\"price\":12.3,\"yes\":true}"; Event event = new
-	 * Event("my.channel", str);
-	 * 
-	 * assertEquals(event.getChannel(), "my.channel");
-	 * assertEquals(event.toJSONString(),
-	 * "{\"channel\":\"my.channel\",\"value\":{\"count\":4,\"price\":12.3,\"yes\":true}}"
-	 * ); }
-	 * 
-	 * @Test public void testValueAndChannel() throws IOException {
-	 * java.util.HashMap<String, Object> value = new java.util.HashMap<String,
-	 * Object>(); Event event = new Event("my.channel", value);
-	 * 
-	 * assertEquals(event.getChannel(), "my.channel");
-	 * assertEquals(event.toJSONString(),
-	 * "{\"channel\":\"my.channel\",\"value\":{}}"); }
-	 * 
-	 * @Test public void testJSON() throws IOException { Event event =
-	 * createEvent(); assertEquals(event.toJSONString(),
-	 * "{\"channel\":\"my.channel\",\"value\":{\"count\":4,\"price\":12.3,\"yes\":true}}"
-	 * ); }
-	 */
-
 	@Test
-	public void sendEvent() throws IOException {
-		Event event = createEvent();
+	public void getEvent() throws IOException {
 		EventClient eventClient = new EventClient(adminUser, adminPassword,
 				endPointInfo, sessionEndPointInfo);
 		// EventClient eventClient = new EventClient(user, password);
@@ -77,15 +51,19 @@ public class EventTest {
 		try {
 			boolean authenticated = eventClient.authenticate();
 			if (authenticated) {
-				Response response = eventClient.send(event);
-				assertEquals(201, response.getStatus());
-				response = eventClient.patch(event);
-				assertEquals(201, response.getStatus());
+				LinkedHashMap<String, Object> value = new java.util.LinkedHashMap<String, Object>();
+				value.put("count", 4);
+				value.put("price", 12.3);
+				value.put("yes", true);
+				eventClient.send(new Event("contact_center_1", value));
+				Response response = eventClient.listen("contact_center_1", "_user_admin");
+				assertEquals(200, response.getStatus());
+				assertEquals(200, response.getResult());
 			} else {
 				fail("Wrong authentication");
 			}
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}
-	}
+	}*/
 }
