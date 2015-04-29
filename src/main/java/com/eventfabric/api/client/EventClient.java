@@ -64,7 +64,7 @@ public class EventClient extends ClientBase {
 		return get(url);
 	}
 	
-	protected Response listen(String channel, String bucket) throws IOException {
+	public Response listen(String channel, String bucket) throws IOException {
 		if (bucket == null || bucket.isEmpty()) {
 			bucket = "_user_" + getCredentials().getUsername().replace("@local", "");
 		}
