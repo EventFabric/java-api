@@ -10,7 +10,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.introspect.BasicClassIntrospector.GetterMethodFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,16 +42,13 @@ public class EventClient extends ClientBase {
 		return post(url, data);
 	}
 	
-	public Response patch(Event event) throws IOException {
-		String bucket = event.getBucket();
+	public Response patch(String channel, String bucket, String op, String path, Object value) throws IOException {
 		if (bucket == null || bucket.isEmpty()) {
 			bucket = "_user_" + getCredentials().getUsername().replace("@local", "");
 		}
 		String url = String.format("%s/%s/%s/", getEndPointInfo(), bucket,
-				event.getChannel());
-		String data = mapper.writeValueAsString(event.getValue());
-
-		return patch(url, data);
+				channel);
+		return patch(url, op, path, value);
 	}
 	
 	public Response get(String channel, String bucket) throws IOException {

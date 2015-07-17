@@ -140,9 +140,17 @@ class ClientBase {
 		return response;
 	}
 
-	protected Response patch(String url, String data) throws IOException {
+	protected Response patch(String url, String op, String path, Object value) throws IOException {
 		DefaultHttpClient httpclient = null;
 		Response response = new Response("Empty response", 500);
+		String data;
+		if ((value instanceof Double)|| (value instanceof Float)) {
+			data = String.format("[{'op': '%s', 'path': '%s', 'value': %f}]", op, path, value);
+		} else if ((value instanceof Integer)) {
+				data = String.format("[{'op': '%s', 'path': '%s', 'value': %d}]", op, path, value);
+		} else {
+			data = String.format("[{'op': '%s', 'path': '%s', 'value': '%s'}]", op, path, value);	
+		}
 		try {
 			httpclient = getHttpClient();
 			StringEntity entity = new StringEntity(data);
@@ -228,7 +236,7 @@ class ClientBase {
 			if (response.getStatus() == 201) {
 				ObjectMapper mapper = new ObjectMapper();
 				JsonNode result = mapper.readTree(response.getResult());
-				this.token = result.get("token").asText();
+				this.token = result.get("token").getValueAsText();
 				setAuthenticated(true);
 			}
 		}
