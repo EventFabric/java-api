@@ -33,10 +33,20 @@ public class EventTest {
 			boolean authenticated = eventClient.authenticate();
 			if (authenticated) {
 				Map<String, Object> value = new LinkedHashMap<String, Object>();
+				value.put("name", "product");
 				value.put("price", 10);
 				Response r1 = eventClient.send(new Event("test_patch", value));
-				Response r2 = eventClient.patch("test_patch", null, "add", "/price", 15);
-				Response r3 = eventClient.patch("test_patch", null, "add", "/price", 22.44f);
+				
+				Map<String, Object> patch = new LinkedHashMap<String, Object>();
+				patch.put("op", "add");
+				patch.put("path", "/price");
+				patch.put("value", 15);
+				
+				Response r2 = eventClient.patch(new Event("test_patch", patch));
+				
+				patch.put("value", 22.44f);
+				Response r3 = eventClient.patch(new Event("test_patch", patch));
+				
 				assertEquals(201, r1.getStatus());
 				assertEquals(200, r2.getStatus());
 				assertEquals(200, r3.getStatus());

@@ -140,20 +140,13 @@ class ClientBase {
 		return response;
 	}
 
-	protected Response patch(String url, String op, String path, Object value) throws IOException {
+	protected Response patch(String url, String data) throws IOException {
 		DefaultHttpClient httpclient = null;
 		Response response = new Response("Empty response", 500);
-		String data;
-		if ((value instanceof Double)|| (value instanceof Float)) {
-			data = String.format("[{'op': '%s', 'path': '%s', 'value': %f}]", op, path, value);
-		} else if ((value instanceof Integer)) {
-				data = String.format("[{'op': '%s', 'path': '%s', 'value': %d}]", op, path, value);
-		} else {
-			data = String.format("[{'op': '%s', 'path': '%s', 'value': '%s'}]", op, path, value);	
-		}
+		
 		try {
 			httpclient = getHttpClient();
-			StringEntity entity = new StringEntity(data);
+			StringEntity entity = new StringEntity("[" + data + "]");
 			log.info("body {}", data);
 			entity.setContentType("application/json-patch+json;charset=UTF-8");
 
