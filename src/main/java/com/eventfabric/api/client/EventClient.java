@@ -7,7 +7,7 @@ import java.util.Date;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +74,7 @@ public class EventClient extends ClientBase {
 				token,
 			    java.nio.charset.StandardCharsets.UTF_8.toString()
 			  ), bucket, channel, new Date().getTime());
-		DefaultHttpClient httpclient = null;
+		CloseableHttpClient httpclient = null;
 		Response response = new Response("Empty response", 500);
 		try {
 			httpclient = getHttpClient();
@@ -114,7 +114,7 @@ public class EventClient extends ClientBase {
 		// shut down the connection manager to ensure
 		// immediate deallocation of all system resources
 		if (httpclient != null) {
-			httpclient.getConnectionManager().shutdown();
+			httpclient.close();
 		}
 		return response;
 	}

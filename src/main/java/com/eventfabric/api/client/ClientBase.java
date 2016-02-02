@@ -2,25 +2,29 @@ package com.eventfabric.api.client;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,10 +53,9 @@ class ClientBase {
 		this.sessionEndPointInfo = sessionEndPointInfo;
 		this.credentials = new Credentials(username, password);
 	}
-
 		
 	protected Response get(String url) throws IOException {
-		DefaultHttpClient httpclient = null;
+		CloseableHttpClient httpclient = null;
 		Response response = new Response("Empty response", 500);
 		try {
 			httpclient = getHttpClient();
@@ -89,13 +92,13 @@ class ClientBase {
 		// shut down the connection manager to ensure
 		// immediate deallocation of all system resources
 		if (httpclient != null) {
-			httpclient.getConnectionManager().shutdown();
+			httpclient.close();
 		}
 		return response;
 	}
 
 	protected Response post(String url, String data) throws IOException {
-		DefaultHttpClient httpclient = null;
+		CloseableHttpClient httpclient = null;
 		Response response = new Response("Empty response", 500);
 		try {
 			httpclient = getHttpClient();
@@ -135,13 +138,13 @@ class ClientBase {
 		// shut down the connection manager to ensure
 		// immediate deallocation of all system resources
 		if (httpclient != null) {
-			httpclient.getConnectionManager().shutdown();
+			httpclient.close();
 		}
 		return response;
 	}
 
 	protected Response patch(String url, String data) throws IOException {
-		DefaultHttpClient httpclient = null;
+		CloseableHttpClient httpclient = null;
 		Response response = new Response("Empty response", 500);
 		
 		try {
@@ -183,39 +186,39 @@ class ClientBase {
 		// shut down the connection manager to ensure
 		// immediate deallocation of all system resources
 		if (httpclient != null) {
-			httpclient.getConnectionManager().shutdown();
+			httpclient.close();
 		}
 		log.info("Response {} with code {}",
 				response.getResult(), response.getStatus());
 		return response;
 	}
 
-	protected DefaultHttpClient getHttpClient() throws NoSuchAlgorithmException,
-			KeyManagementException {
-		DefaultHttpClient base = new DefaultHttpClient();
-		SSLContext ctx = SSLContext.getInstance("TLS");
-		X509TrustManager tm = new X509TrustManager() {
-
-			public void checkClientTrusted(X509Certificate[] xcs, String string)
-					throws CertificateException {
-			}
-
-			public void checkServerTrusted(X509Certificate[] xcs, String string)
-					throws CertificateException {
-			}
-
-			public X509Certificate[] getAcceptedIssuers() {
-				return null;
-			}
-		};
-		ctx.init(null, new TrustManager[] { tm }, null);
-		SSLSocketFactory ssf = new SSLSocketFactory(ctx,
-				SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-		ClientConnectionManager ccm = base.getConnectionManager();
-		SchemeRegistry sr = ccm.getSchemeRegistry();
-		sr.register(new Scheme("https", 443, ssf));
-
-		return new DefaultHttpClient(ccm, base.getParams());
+	protected CloseableHttpClient getHttpClient() throws NoSuchAlgorithmException,
+			KeyManagementException, KeyStoreException {
+		if (endPointInfo != null && !endPointInfo.isSecure()) {			
+			return HttpClients.custom().build();
+		} else {
+			SSLContextBuilder builder = SSLContexts.custom();
+			builder.loadTrustMaterial(null, new TrustStrategy() {
+			    @Override
+			    public boolean isTrusted(X509Certificate[] chain, String authType)
+			            throws CertificateException {
+			        return true;
+			    }
+			});
+			SSLContext sslContext = builder.build();
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
+	
+			Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
+			        .<ConnectionSocketFactory> create().register("https", sslsf)
+			        .build();
+	
+			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(
+			        socketFactoryRegistry);
+			
+			return HttpClients.custom()
+			        .setConnectionManager(cm).build();
+		}
 	}
 
 	public boolean authenticate() throws IOException {
