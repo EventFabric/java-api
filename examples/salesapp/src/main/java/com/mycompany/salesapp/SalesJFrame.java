@@ -10,10 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
-
 import com.eventfabric.api.client.Response;
 import com.eventfabric.api.model.Event;
 import com.mycompany.EventClient;

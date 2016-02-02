@@ -35,7 +35,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JList;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
-import org.codehaus.jackson.JsonGenerationException;
 import org.apache.commons.codec.binary.StringUtils;
 
 public class FrameProducts extends JFrame {
