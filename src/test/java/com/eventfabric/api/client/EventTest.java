@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
 import com.eventfabric.api.model.Event;

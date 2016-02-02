@@ -22,12 +22,12 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eventfabric.api.model.User;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 class ClientBase {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
@@ -229,7 +229,7 @@ class ClientBase {
 			if (response.getStatus() == 201) {
 				ObjectMapper mapper = new ObjectMapper();
 				JsonNode result = mapper.readTree(response.getResult());
-				this.token = result.get("token").getValueAsText();
+				this.token = result.get("token").asText();
 				setAuthenticated(true);
 			}
 		}

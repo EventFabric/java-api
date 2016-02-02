@@ -9,11 +9,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eventfabric.api.model.Event;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EventClient extends ClientBase {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
