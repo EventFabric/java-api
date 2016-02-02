@@ -5,9 +5,9 @@ public class EndPointInfo {
 	public static int DEFAULT_API_PORT = 80;
 	public static int DEFAULT_SSL_API_PORT = 443;
 	public static boolean DEFAULT_API_SECURE = true;
-	public static String DEFAULT_API_ENDPOINT_EVENT = "/streams";
+	public static String DEFAULT_API_ENDPOINT_EVENT = "/app/streams";
 	public static String DEFAULT_API_ENDPOINT_USER = "/users";
-	public static String DEFAULT_API_ENDPOINT_SESSION = "/sessions";
+	public static String DEFAULT_API_ENDPOINT_SESSION = "/app/sessions";
 
 	private final String host;
 	private final String path;
