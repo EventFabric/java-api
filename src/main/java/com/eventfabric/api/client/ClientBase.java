@@ -8,23 +8,20 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.SSLContexts;
-import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,15 +50,15 @@ class ClientBase {
 		this.sessionEndPointInfo = sessionEndPointInfo;
 		this.credentials = new Credentials(username, password);
 	}
-		
+
 	protected Response get(String url) throws IOException {
-		CloseableHttpClient httpclient = null;
+		DefaultHttpClient httpclient = null;
 		Response response = new Response("Empty response", 500);
 		try {
 			httpclient = getHttpClient();
-			
+
 			HttpGet httpget = new HttpGet(url);
-			
+
 			if (token != null && token.length() > 0) {
 				httpget.addHeader("x-session", token);
 				// httpclient.getParams().setParameter("x-session", token);
@@ -77,8 +74,7 @@ class ClientBase {
 				jsonResult = EntityUtils.toString(resEntity);
 			}
 
-			int statusCode = httpResponse.getStatusLine()
-					.getStatusCode();
+			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			response = new Response(jsonResult, statusCode);
 			if (statusCode == 401) {
 				setAuthenticated(false);
@@ -92,13 +88,13 @@ class ClientBase {
 		// shut down the connection manager to ensure
 		// immediate deallocation of all system resources
 		if (httpclient != null) {
-			httpclient.close();
+			httpclient.getConnectionManager().shutdown();
 		}
 		return response;
 	}
 
 	protected Response post(String url, String data) throws IOException {
-		CloseableHttpClient httpclient = null;
+		DefaultHttpClient httpclient = null;
 		Response response = new Response("Empty response", 500);
 		try {
 			httpclient = getHttpClient();
@@ -123,8 +119,7 @@ class ClientBase {
 				jsonResult = EntityUtils.toString(resEntity);
 			}
 
-			int statusCode = httpResponse.getStatusLine()
-					.getStatusCode();
+			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			response = new Response(jsonResult, statusCode);
 			if (statusCode == 401) {
 				setAuthenticated(false);
@@ -138,15 +133,15 @@ class ClientBase {
 		// shut down the connection manager to ensure
 		// immediate deallocation of all system resources
 		if (httpclient != null) {
-			httpclient.close();
+			httpclient.getConnectionManager().shutdown();
 		}
 		return response;
 	}
 
 	protected Response patch(String url, String data) throws IOException {
-		CloseableHttpClient httpclient = null;
+		DefaultHttpClient httpclient = null;
 		Response response = new Response("Empty response", 500);
-		
+
 		try {
 			httpclient = getHttpClient();
 			StringEntity entity = new StringEntity("[" + data + "]");
@@ -171,8 +166,7 @@ class ClientBase {
 				jsonResult = EntityUtils.toString(resEntity);
 			}
 
-			int statusCode = httpResponse.getStatusLine()
-					.getStatusCode();
+			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			response = new Response(jsonResult, statusCode);
 			if (statusCode == 401) {
 				setAuthenticated(false);
@@ -186,39 +180,40 @@ class ClientBase {
 		// shut down the connection manager to ensure
 		// immediate deallocation of all system resources
 		if (httpclient != null) {
-			httpclient.close();
+			httpclient.getConnectionManager().shutdown();
 		}
-		log.info("Response {} with code {}",
-				response.getResult(), response.getStatus());
+		log.info("Response {} with code {}", response.getResult(),
+				response.getStatus());
 		return response;
 	}
 
-	protected CloseableHttpClient getHttpClient() throws NoSuchAlgorithmException,
-			KeyManagementException, KeyStoreException {
-		if (endPointInfo != null && !endPointInfo.isSecure()) {			
-			return HttpClients.custom().build();
-		} else {
-			SSLContextBuilder builder = SSLContexts.custom();
-			builder.loadTrustMaterial(null, new TrustStrategy() {
-			    @Override
-			    public boolean isTrusted(X509Certificate[] chain, String authType)
-			            throws CertificateException {
-			        return true;
-			    }
-			});
-			SSLContext sslContext = builder.build();
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
-	
-			Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
-			        .<ConnectionSocketFactory> create().register("https", sslsf)
-			        .build();
-	
-			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(
-			        socketFactoryRegistry);
-			
-			return HttpClients.custom()
-			        .setConnectionManager(cm).build();
-		}
+	protected DefaultHttpClient getHttpClient()
+			throws NoSuchAlgorithmException, KeyManagementException,
+			KeyStoreException {
+		DefaultHttpClient base = new DefaultHttpClient();
+		SSLContext ctx = SSLContext.getInstance("TLS");
+		X509TrustManager tm = new X509TrustManager() {
+
+			public void checkClientTrusted(X509Certificate[] xcs, String string)
+					throws CertificateException {
+			}
+
+			public void checkServerTrusted(X509Certificate[] xcs, String string)
+					throws CertificateException {
+			}
+
+			public X509Certificate[] getAcceptedIssuers() {
+				return null;
+			}
+		};
+		ctx.init(null, new TrustManager[] { tm }, null);
+		SSLSocketFactory ssf = new SSLSocketFactory(ctx,
+				SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+		ClientConnectionManager ccm = base.getConnectionManager();
+		SchemeRegistry sr = ccm.getSchemeRegistry();
+		sr.register(new Scheme("https", 443, ssf));
+
+		return new DefaultHttpClient(ccm, base.getParams());
 	}
 
 	public boolean authenticate() throws IOException {
@@ -238,7 +233,7 @@ class ClientBase {
 		}
 		return isAuthenticated();
 	}
-	
+
 	public void loggout() {
 		setAuthenticated(false);
 		this.token = null;
@@ -255,7 +250,7 @@ class ClientBase {
 	public Credentials getCredentials() {
 		return credentials;
 	}
-	
+
 	public boolean isAuthenticated() {
 		return authenticated;
 	}

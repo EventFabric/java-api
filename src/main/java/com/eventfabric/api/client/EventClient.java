@@ -7,7 +7,7 @@ import java.util.Date;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,13 +68,13 @@ public class EventClient extends ClientBase {
 			bucket = "_user_" + getCredentials().getUsername().replace("@local", "");
 		}
 
-		String endpoint = getEndPointInfo().toString().replace(getEndPointInfo().getPath(), "/listen");
+		String endpoint = getEndPointInfo().toString().replace("/streams", "/listen");
 		String token = getToken();
 		String url = String.format("%s?jwt=%s&s=%s:%s&%d", endpoint, URLEncoder.encode(
 				token,
 			    java.nio.charset.StandardCharsets.UTF_8.toString()
 			  ), bucket, channel, new Date().getTime());
-		CloseableHttpClient httpclient = null;
+		DefaultHttpClient httpclient = null;
 		Response response = new Response("Empty response", 500);
 		try {
 			httpclient = getHttpClient();
@@ -114,7 +114,7 @@ public class EventClient extends ClientBase {
 		// shut down the connection manager to ensure
 		// immediate deallocation of all system resources
 		if (httpclient != null) {
-			httpclient.close();
+			httpclient.getConnectionManager().shutdown();
 		}
 		return response;
 	}
