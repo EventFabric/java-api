@@ -68,7 +68,7 @@ class ClientBase {
 			}
 
 			HttpResponse httpResponse = httpclient.execute(httpget);
-			log.info("executing request {} got status {}",
+			log.debug("executing request {} got status {}",
 					httpget.getRequestLine(), httpResponse.getStatusLine());
 
 			HttpEntity resEntity = httpResponse.getEntity();
@@ -114,7 +114,7 @@ class ClientBase {
 			}
 
 			HttpResponse httpResponse = httpclient.execute(httppost);
-			log.info("executing request {} got status {}",
+			log.debug("executing request {} got status {}",
 					httppost.getRequestLine(), httpResponse.getStatusLine());
 
 			HttpEntity resEntity = httpResponse.getEntity();

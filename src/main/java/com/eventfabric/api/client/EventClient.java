@@ -90,7 +90,7 @@ public class EventClient extends ClientBase {
 			}
 
 			HttpResponse httpResponse = httpclient.execute(httpget);
-			log.info("executing request {} got status {}",
+			log.debug("executing request {} got status {}",
 					httpget.getRequestLine(), httpResponse.getStatusLine());
 
 			HttpEntity resEntity = httpResponse.getEntity();
