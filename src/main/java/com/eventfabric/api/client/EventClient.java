@@ -13,11 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eventfabric.api.model.Event;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EventClient extends ClientBase {
 	private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-	private ObjectMapper mapper = new ObjectMapper();
 
 	public EventClient(String username, String password) {
 		super(username, password, new EndPointInfo(
@@ -35,11 +33,8 @@ public class EventClient extends ClientBase {
 		if (bucket == null || bucket.isEmpty()) {
 			bucket = "_user_" + getCredentials().getUsername().replace("@local", "");
 		}
-		String url = String.format("%s/%s/%s/", getEndPointInfo(), bucket,
-				event.getChannel());
-		String data = mapper.writeValueAsString(event.getValue());
-
-		return post(url, data);
+		String url = String.format("%s/%s/%s/", getEndPointInfo(), bucket, event.getChannel());
+		return post(url, event.getValue());
 	}
 	
 	public Response patch(Event event) throws IOException {
@@ -47,11 +42,8 @@ public class EventClient extends ClientBase {
 		if (bucket == null || bucket.isEmpty()) {
 			bucket = "_user_" + getCredentials().getUsername().replace("@local", "");
 		}
-		String url = String.format("%s/%s/%s/", getEndPointInfo(), bucket,
-				event.getChannel());
-		String data = mapper.writeValueAsString(event.getValue());
-
-		return patch(url, data);
+		String url = String.format("%s/%s/%s/", getEndPointInfo(), bucket, event.getChannel());
+		return patch(url, event.getValue());
 	}
 	
 	public Response get(String channel, String bucket) throws IOException {

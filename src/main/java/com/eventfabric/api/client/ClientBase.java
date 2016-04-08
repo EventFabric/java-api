@@ -1,6 +1,7 @@
 package com.eventfabric.api.client;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -30,13 +31,14 @@ import com.eventfabric.api.model.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-class ClientBase {
-	private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+public class ClientBase {
+	private static Logger LOGGER = LoggerFactory.getLogger(ClientBase.class);
 	private EndPointInfo endPointInfo;
 	private EndPointInfo sessionEndPointInfo;
 	private Credentials credentials;
 	private String token;
 	private boolean authenticated;
+	private static Charset UTF8 = Charset.forName("UTF-8");
 
 	public ClientBase(String username, String password) {
 		this(username, password, new EndPointInfo(
@@ -98,7 +100,7 @@ class ClientBase {
 		Response response = new Response("Empty response", 500);
 		try {
 			httpclient = getHttpClient();
-			StringEntity entity = new StringEntity(data);
+			StringEntity entity = new StringEntity(data, UTF8);
 			entity.setContentType("application/json;charset=UTF-8");
 
 			HttpPost httppost = new HttpPost(url);

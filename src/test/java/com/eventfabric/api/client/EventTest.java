@@ -21,10 +21,13 @@ public class EventTest {
 			boolean authenticated = eventClient.authenticate();
 			if (authenticated) {
 				Map<String, Object> value = new LinkedHashMap<String, Object>();
-				value.put("name", "product");
+				value.put("name", "estação");
 				value.put("price", 10);
 				Response r1 = eventClient.send(new Event("test_channel", value));
 				assertEquals(201, r1.getStatus());
+
+				Response r2 = eventClient.send(new Event("test_channel", "{\"name\":\"estação\",\"price\":11}"));
+				assertEquals(201, r2.getStatus());
 			} else {
 				fail("Wrong authentication");
 			}
@@ -32,7 +35,7 @@ public class EventTest {
 			fail(e.getMessage());
 		}
 	}
-	
+	/*
 	@Test
 	public void sendEventLocalTest() throws IOException {
 		EndPointInfo endPointInfo = new EndPointInfo("localhost", "/streams", 8080, false);
@@ -54,5 +57,5 @@ public class EventTest {
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}
-	}
+	}*/
 }
