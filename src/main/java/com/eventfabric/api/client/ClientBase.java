@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 class ClientBase {
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	private EndPointInfo endPointInfo;
 	private EndPointInfo sessionEndPointInfo;
 	private Credentials credentials;
@@ -65,7 +65,7 @@ class ClientBase {
 			}
 
 			HttpResponse httpResponse = httpclient.execute(httpget);
-			log.info("executing request {} got status {}",
+			LOGGER.debug("executing request {} got status {}",
 					httpget.getRequestLine(), httpResponse.getStatusLine());
 
 			HttpEntity resEntity = httpResponse.getEntity();
@@ -82,7 +82,7 @@ class ClientBase {
 			EntityUtils.consume(resEntity);
 
 		} catch (Exception ex) {
-			log.error("Exception on get to {}", url, ex);
+			LOGGER.error("Exception on get to {}", url, ex);
 		}
 		// When HttpClient instance is no longer needed,
 		// shut down the connection manager to ensure
@@ -110,7 +110,7 @@ class ClientBase {
 			}
 
 			HttpResponse httpResponse = httpclient.execute(httppost);
-			log.info("executing request {} got status {}",
+			LOGGER.debug("executing request {} got status {}",
 					httppost.getRequestLine(), httpResponse.getStatusLine());
 
 			HttpEntity resEntity = httpResponse.getEntity();
@@ -127,7 +127,7 @@ class ClientBase {
 			EntityUtils.consume(resEntity);
 
 		} catch (Exception ex) {
-			log.error("Exception on post to {}", url, ex);
+			LOGGER.error("Exception on post to {}", url, ex);
 		}
 		// When HttpClient instance is no longer needed,
 		// shut down the connection manager to ensure
@@ -145,7 +145,7 @@ class ClientBase {
 		try {
 			httpclient = getHttpClient();
 			StringEntity entity = new StringEntity("[" + data + "]");
-			log.info("body {}", data);
+			
 			entity.setContentType("application/json-patch+json;charset=UTF-8");
 
 			HttpPatch request = new HttpPatch(url);
@@ -157,7 +157,7 @@ class ClientBase {
 			}
 
 			HttpResponse httpResponse = httpclient.execute(request);
-			log.info("executing patch request {} got status {}",
+			LOGGER.debug("executing patch request {} got status {}",
 					request.getRequestLine(), httpResponse.getStatusLine());
 
 			HttpEntity resEntity = httpResponse.getEntity();
@@ -174,7 +174,7 @@ class ClientBase {
 			EntityUtils.consume(resEntity);
 
 		} catch (Exception ex) {
-			log.error("Exception on patch to {}", url, ex);
+			LOGGER.error("Exception on patch to {}", url, ex);
 		}
 		// When HttpClient instance is no longer needed,
 		// shut down the connection manager to ensure
@@ -182,7 +182,7 @@ class ClientBase {
 		if (httpclient != null) {
 			httpclient.getConnectionManager().shutdown();
 		}
-		log.info("Response {} with code {}", response.getResult(),
+		LOGGER.debug("Response {} with code {}", response.getResult(),
 				response.getStatus());
 		return response;
 	}

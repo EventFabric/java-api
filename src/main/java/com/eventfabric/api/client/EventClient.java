@@ -16,7 +16,7 @@ import com.eventfabric.api.model.Event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EventClient extends ClientBase {
-	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	private ObjectMapper mapper = new ObjectMapper();
 
 	public EventClient(String username, String password) {
@@ -90,7 +90,7 @@ public class EventClient extends ClientBase {
 			}
 
 			HttpResponse httpResponse = httpclient.execute(httpget);
-			log.info("executing request {} got status {}",
+			LOGGER.debug("executing request {} got status {}",
 					httpget.getRequestLine(), httpResponse.getStatusLine());
 
 			HttpEntity resEntity = httpResponse.getEntity();
@@ -108,7 +108,7 @@ public class EventClient extends ClientBase {
 			EntityUtils.consume(resEntity);
 
 		} catch (Exception ex) {
-			log.error("Exception on get to {}", url, ex);
+			LOGGER.error("Exception on get to {}", url, ex);
 		}
 		// When HttpClient instance is no longer needed,
 		// shut down the connection manager to ensure
