@@ -3,6 +3,7 @@ package com.eventfabric.api.client;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -11,6 +12,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.ArrayList;
 
 import com.eventfabric.api.model.Event;
 
@@ -29,14 +33,38 @@ public class EventClient extends ClientBase {
 	}
 
 	public Response send(Event event) throws IOException {
+        return send(event, null, null);
+    }
+
+    private void addParamIfExists (List<String> params, String key, String val) throws UnsupportedEncodingException {
+        if (val != null && !"".equals(val.trim())) {
+            String p = String.format("%s=%s", key, URLEncoder.encode(val.trim(), "UTF-8"));
+            params.add(p);
+        }
+    }
+
+	public Response send(Event event, String provFrom, List<String> provVia) throws IOException, UnsupportedEncodingException {
 		String bucket = event.getBucket();
 		if (bucket == null || bucket.isEmpty()) {
-			bucket = "_user_" + getCredentials().getUsername().replace("@local", "");
+			bucket = "@" + getCredentials().getUsername().replace("@local", "");
 		}
-		String url = String.format("%s/%s/%s/", getEndPointInfo(), bucket, event.getChannel());
-		return post(url, event.getValue());
+		String baseUrl = String.format("%s/%s/%s", getEndPointInfo(), bucket, event.getChannel());
+
+        List<String> params = new ArrayList<>();
+
+        addParamIfExists(params, "$key", event.getKey());
+        addParamIfExists(params, "prov-from", provFrom);
+
+        if (provVia != null) {
+            for (String provViaItem : provVia) {
+                addParamIfExists(params, "prov-via", provViaItem);
+            }
+        }
+
+        String finalUrl = String.format("%s?%s", baseUrl, String.join("&", params));
+		return post(finalUrl, event.getValue());
 	}
-	
+
 	public Response patch(Event event) throws IOException {
 		String bucket = event.getBucket();
 		if (bucket == null || bucket.isEmpty()) {

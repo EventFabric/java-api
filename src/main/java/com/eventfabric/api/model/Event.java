@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class Event {
 	private String channel;
 	private String bucket;
+	private String key;
 	private String value;
 	private static ObjectMapper mapper = new ObjectMapper();
 
@@ -40,8 +41,7 @@ public class Event {
 		this.value = mapper.writeValueAsString(value);
 	}
 
-	public Event(String channel, String value, String bucket)
-			throws  IOException {
+	public Event(String channel, String value, String bucket) {
 		this(channel, value);
 		setBucket(bucket);
 	}
@@ -81,7 +81,15 @@ public class Event {
 		return bucket;
 	}
 
+	public String getKey() {
+		return this.key;
+	}
+
 	public void setBucket(String bucket) {
 		this.bucket = bucket;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 }

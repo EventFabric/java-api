@@ -37,6 +37,9 @@ import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import org.apache.commons.codec.binary.StringUtils;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class FrameProducts extends JFrame {
     private String host = "localhost";
     private int port = 8080;
@@ -136,15 +139,18 @@ public class FrameProducts extends JFrame {
 				// create the event to send
 				Event event = new Event(txtChannel.getText(), value);
 
+                // provFrom
+                String provFrom = "idqc://tijuana:8081?name=portals-access-by-day";
+                List<String> provVia = new ArrayList<>();
+                provVia.add("jdbc:oracle://localhost:1531/prod-db?table=baixas");
+                provVia.add("kafka://localhost:9020/kafka-topic");
 				// send the event
-				Response response = client.send(event);
+				Response response = client.send(event, provFrom, provVia);
 				// do something with the response
 
 				String responseText = String.format("Status: %s\nEvent:\n%s",
-						response.getStatus(), event.toJSONString());
+						response.getStatus(), event);
 				lblResponseText.setText(responseText);
-			} catch (JsonGenerationException e) {
-				lblResponseText.setText(e.getMessage());
 			} catch (IOException e) {
 				lblResponseText.setText(e.getMessage());
 			}
