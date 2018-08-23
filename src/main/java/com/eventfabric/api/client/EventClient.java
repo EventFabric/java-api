@@ -33,7 +33,7 @@ public class EventClient extends ClientBase {
 	}
 
 	public Response send(Event event) throws IOException {
-        return send(event, null, null);
+        return send(event, null, new ArrayList<>());
     }
 
     private void addParamIfExists (List<String> params, String key, String val) throws UnsupportedEncodingException {
@@ -41,6 +41,12 @@ public class EventClient extends ClientBase {
             String p = String.format("%s=%s", key, URLEncoder.encode(val.trim(), "UTF-8"));
             params.add(p);
         }
+    }
+
+	public Response send(Event event, String provFrom, String provVia) throws IOException, UnsupportedEncodingException {
+        List<String> pvia = new ArrayList<>();
+        pvia.add(provVia);
+        return send(event, provFrom, pvia);
     }
 
 	public Response send(Event event, String provFrom, List<String> provVia) throws IOException, UnsupportedEncodingException {
