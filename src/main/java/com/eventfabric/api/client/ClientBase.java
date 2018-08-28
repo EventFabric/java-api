@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import com.eventfabric.api.model.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+import java.util.HashMap;
 
 public class ClientBase {
 	private static Logger LOGGER = LoggerFactory.getLogger(ClientBase.class);
@@ -96,6 +98,10 @@ public class ClientBase {
 	}
 
 	protected Response post(String url, String data) throws IOException {
+        return post(url, data, new HashMap<>());
+    }
+
+	protected Response post(String url, String data, Map<String, String> headers) throws IOException {
 		DefaultHttpClient httpclient = null;
 		Response response = new Response("Empty response", 500);
 		try {
@@ -105,6 +111,11 @@ public class ClientBase {
 
 			HttpPost httppost = new HttpPost(url);
 			httppost.setEntity(entity);
+
+
+            for (Map.Entry<String, String> entry: headers.entrySet()) {
+				httppost.addHeader(entry.getKey(), entry.getValue());
+            }
 
 			if (token != null && token.length() > 0) {
 				httppost.addHeader("x-session", token);

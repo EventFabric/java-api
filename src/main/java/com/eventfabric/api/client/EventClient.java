@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.eventfabric.api.model.Event;
 
@@ -43,6 +45,12 @@ public class EventClient extends ClientBase {
         }
     }
 
+    private void addHeaderIfExists (Map<String, String> headers, String key, String val) throws UnsupportedEncodingException {
+        if (val != null && !"".equals(val.trim())) {
+            headers.put(key, val.trim());
+        }
+    }
+
 	public Response send(Event event, String provFrom, String provVia) throws IOException, UnsupportedEncodingException {
         List<String> pvia = new ArrayList<>();
         pvia.add(provVia);
@@ -57,18 +65,19 @@ public class EventClient extends ClientBase {
 		String baseUrl = String.format("%s/%s/%s", getEndPointInfo(), bucket, event.getChannel());
 
         List<String> params = new ArrayList<>();
+        Map<String, String> headers = new HashMap<>();
 
         addParamIfExists(params, "$key", event.getKey());
-        addParamIfExists(params, "prov-from", provFrom);
+        addHeaderIfExists(headers, "x-prov-from", provFrom);
 
         if (provVia != null) {
             for (String provViaItem : provVia) {
-                addParamIfExists(params, "prov-via", provViaItem);
+                addHeaderIfExists(headers, "x-prov-via", provViaItem);
             }
         }
 
         String finalUrl = String.format("%s?%s", baseUrl, String.join("&", params));
-		return post(finalUrl, event.getValue());
+		return post(finalUrl, event.getValue(), headers);
 	}
 
 	public Response patch(Event event) throws IOException {
