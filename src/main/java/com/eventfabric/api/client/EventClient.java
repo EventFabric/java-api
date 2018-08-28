@@ -83,24 +83,24 @@ public class EventClient extends ClientBase {
 	public Response patch(Event event) throws IOException {
 		String bucket = event.getBucket();
 		if (bucket == null || bucket.isEmpty()) {
-			bucket = "_user_" + getCredentials().getUsername().replace("@local", "");
+			bucket = "@" + getCredentials().getUsername().replace("@local", "");
 		}
 		String url = String.format("%s/%s/%s/", getEndPointInfo(), bucket, event.getChannel());
 		return patch(url, event.getValue());
 	}
-	
+
 	public Response get(String channel, String bucket) throws IOException {
 		if (bucket == null || bucket.isEmpty()) {
-			bucket = "_user_" + getCredentials().getUsername().replace("@local", "");
+			bucket = "@" + getCredentials().getUsername().replace("@local", "");
 		}
 		String url = String.format("%s/%s/%s/", getEndPointInfo(), bucket,
 				channel);
 		return get(url);
 	}
-	
+
 	public Response listen(String channel, String bucket) throws IOException {
 		if (bucket == null || bucket.isEmpty()) {
-			bucket = "_user_" + getCredentials().getUsername().replace("@local", "");
+			bucket = "@" + getCredentials().getUsername().replace("@local", "");
 		}
 
 		String endpoint = getEndPointInfo().toString().replace("/streams", "/listen");
@@ -113,12 +113,12 @@ public class EventClient extends ClientBase {
 		Response response = new Response("Empty response", 500);
 		try {
 			httpclient = getHttpClient();
-			
+
 			HttpGet httpget = new HttpGet(url);
 			httpget.addHeader("content-type", "application/json");
 			httpget.addHeader("connection", "keep-alive");
 			httpget.addHeader("accept", "application/json");
-			
+
 			if (token!= null && token.length() > 0) {
 				httpget.addHeader("x-session", token);
 				// httpclient.getParams().setParameter("x-session", token);
