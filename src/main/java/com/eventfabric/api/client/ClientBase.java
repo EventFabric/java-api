@@ -119,7 +119,6 @@ public class ClientBase {
 
 			if (token != null && token.length() > 0) {
 				httppost.addHeader("x-session", token);
-				// httpclient.getParams().setParameter("x-session", token);
 			}
 
 			HttpResponse httpResponse = httpclient.execute(httppost);

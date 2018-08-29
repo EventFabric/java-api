@@ -45,9 +45,13 @@ public class EventClient extends ClientBase {
         }
     }
 
-    private void addHeaderIfExists (Map<String, String> headers, String key, String val) throws UnsupportedEncodingException {
+    private void addHeaderIfExists (Map<String, String> headers, String key, String val, boolean encode) throws UnsupportedEncodingException {
         if (val != null && !"".equals(val.trim())) {
-            headers.put(key, val.trim());
+            String v = val.trim();
+            if (encode) {
+                v = URLEncoder.encode(val.trim(), "UTF-8");
+            }
+            headers.put(key, v);
         }
     }
 
@@ -68,11 +72,11 @@ public class EventClient extends ClientBase {
         Map<String, String> headers = new HashMap<>();
 
         addParamIfExists(params, "$key", event.getKey());
-        addHeaderIfExists(headers, "x-prov-from", provFrom);
+        addHeaderIfExists(headers, "x-prov-from", provFrom, false);
 
         if (provVia != null) {
             for (String provViaItem : provVia) {
-                addHeaderIfExists(headers, "x-prov-via", provViaItem);
+                addHeaderIfExists(headers, "x-prov-via", provViaItem, true);
             }
         }
 
